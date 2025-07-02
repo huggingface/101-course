@@ -1,0 +1,82 @@
+- title: "0. Welcome to the MCP Course"
+  sections:
+  - local: unit0/introduction
+    title: Welcome to the MCP Course
+    
+- title: "1. Introduction to Model Context Protocol"
+  sections:
+  - local: unit1/introduction
+    title: Introduction to Model Context Protocol (MCP)
+  - local: unit1/key-concepts
+    title: Key Concepts and Terminology
+  - local: unit1/architectural-components
+    title: Architectural Components
+  - local: unit1/quiz1
+    title: Quiz 1 - MCP Fundamentals
+  - local: unit1/communication-protocol
+    title: The Communication Protocol
+  - local: unit1/capabilities
+    title: Understanding MCP Capabilities
+  - local: unit1/sdk
+    title: MCP SDK
+  - local: unit1/quiz2
+    title: Quiz 2 - MCP SDK
+  - local: unit1/mcp-clients
+    title: MCP Clients
+  - local: unit1/gradio-mcp
+    title: Gradio MCP Integration
+  - local: unit1/unit1-recap
+    title: Unit 1 Recap
+  - local: unit1/certificate
+    title: Get your certificate!
+
+- title: "2. Use Case: End-to-End MCP Application"
+  sections:
+  - local: unit2/introduction
+    title: Introduction to Building an MCP Application
+  - local: unit2/gradio-server
+    title: Building the Gradio MCP Server
+  - local: unit2/clients
+    title: Using MCP Clients with your application
+  - local: unit2/continue-client
+    title: Using MCP in the Your AI Coding Assistant
+  - local: unit2/gradio-client
+    title: Building an MCP Client with Gradio
+  - local: unit2/tiny-agents
+    title: Building Tiny Agents with MCP and the Hugging Face Hub
+
+- title: "3. Advanced MCP Development: Custom Workflow Servers"
+  sections:
+  - local: unit3/introduction
+    title: Building Custom Workflow Servers for Claude Code
+  - local: unit3/build-mcp-server
+    title: "Module 1: Build MCP Server"
+  - local: unit3/github-actions-integration
+    title: "Module 2: GitHub Actions Integration"
+  - local: unit3/slack-notification
+    title: "Module 3: Slack Notification"
+  - local: unit3/build-mcp-server-solution-walkthrough
+    title: "Unit 3 Solution Walkthrough: Building a Pull Request Agent with MCP"
+  - local: unit3/certificate
+    title: "Get your certificate!"
+  - local: unit3/conclusion
+    title: "Unit 3 Conclusion"
+
+- title: "3.1. Use Case: Build a Pull Request Agent on the Hub"
+  sections:
+  - local: unit3_1/introduction
+    title: Build a Pull Request Agent on the Hugging Face Hub
+  - local: unit3_1/setting-up-the-project
+    title: Setting up the Project
+  - local: unit3_1/creating-the-mcp-server
+    title: Creating the MCP Server
+  - local: unit3_1/quiz1
+    title: Quiz 1 - MCP Server Implementation
+  - local: unit3_1/mcp-client
+    title: MCP Client
+  - local: unit3_1/webhook-listener
+    title: Webhook Listener
+  - local: unit3_1/quiz2
+    title: Quiz 2 - Pull Request Agent Integration
+  - local: unit3_1/conclusion
+    title: Conclusion
