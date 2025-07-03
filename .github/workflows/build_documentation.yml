@@ -10,9 +10,9 @@ jobs:
     uses: huggingface/doc-builder/.github/workflows/build_main_documentation.yml@main
     with:
       commit_sha: ${{ github.sha }}
-      package: mcp-course
-      package_name: mcp-course
-      path_to_docs: mcp-course/units/
+      package: 101-course
+      package_name: 101-course
+      path_to_docs: 101-course/units/
       additional_args: --not_python_module
       languages: en
     secrets:

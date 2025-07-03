@@ -13,8 +13,8 @@ jobs:
     with:
       commit_sha: ${{ github.event.pull_request.head.sha }}
       pr_number: ${{ github.event.number }}
-      package: mcp-course
-      package_name: mcp-course
-      path_to_docs: mcp-course/units/
+      package: 101-course
+      package_name: 101-course
+      path_to_docs: 101-course/units/
       additional_args: --not_python_module
       languages: en 

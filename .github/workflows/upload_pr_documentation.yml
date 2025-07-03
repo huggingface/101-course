@@ -17,7 +17,7 @@ jobs:
   build:
     uses: huggingface/doc-builder/.github/workflows/upload_pr_documentation.yml@main
     with:
-      package_name: mcp-course
+      package_name: 101-course
       hub_base_path: https://moon-ci-docs.huggingface.co/learn
     secrets:
       hf_token: ${{ secrets.HF_DOC_BUILD_PUSH }}
