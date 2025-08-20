@@ -1,641 +1,241 @@
-<FrameworkSwitchCourse {fw} />
+# Using Open Source Models
 
-# Sharing pretrained models[[sharing-pretrained-models]]
+Ready to try some AI models? The Hugging Face Hub hosts thousands of open-source models that you can use right now - no setup required! 🚀 
 
-{#if fw === 'pt'}
-
-<CourseFloatingBanner chapter={1}
-  classNames="absolute z-10 right-0 top-0"
-  notebooks={[
-    {label: "Google Colab", value: "https://colab.research.google.com/github/huggingface/notebooks/blob/master/course/en/chapter4/section3_pt.ipynb"},
-    {label: "Aws Studio", value: "https://studiolab.sagemaker.aws/import/github/huggingface/notebooks/blob/master/course/en/chapter4/section3_pt.ipynb"},
-]} />
-
-{:else}
-
-<CourseFloatingBanner chapter={1}
-  classNames="absolute z-10 right-0 top-0"
-  notebooks={[
-    {label: "Google Colab", value: "https://colab.research.google.com/github/huggingface/notebooks/blob/master/course/en/chapter4/section3_tf.ipynb"},
-    {label: "Aws Studio", value: "https://studiolab.sagemaker.aws/import/github/huggingface/notebooks/blob/master/course/en/chapter4/section3_tf.ipynb"},
-]} />
-
-{/if}
-
-In the steps below, we'll take a look at the easiest ways to share pretrained models to the 🤗 Hub. There are tools and utilities available that make it simple to share and update models directly on the Hub, which we will explore below.
-
-<Youtube id="9yY3RB_GSPM"/>
-
-We encourage all users that train models to contribute by sharing them with the community — sharing models, even when trained on very specific datasets, will help others, saving them time and compute resources and providing access to useful trained artifacts. In turn, you can benefit from the work that others have done!
-
-There are three ways to go about creating new model repositories:
-
-- Using the `push_to_hub` API
-- Using the `huggingface_hub` Python library
-- Using the web interface
-
-Once you've created a repository, you can upload files to it via git and git-lfs. We'll walk you through creating model repositories and uploading files to them in the following sections.
-
-
-## Using the `push_to_hub` API[[using-the-pushtohub-api]]
-
-{#if fw === 'pt'}
-
-<Youtube id="Zh0FfmVrKX0"/>
-
-{:else}
-
-<Youtube id="pUh5cGmNV8Y"/>
-
-{/if}
-
-The simplest way to upload files to the Hub is by leveraging the `push_to_hub` API.
-
-Before going further, you'll need to generate an authentication token so that the `huggingface_hub` API knows who you are and what namespaces you have write access to. Make sure you are in an environment where you have `transformers` installed (see [Setup](/course/chapter0)). If you are in a notebook, you can use the following function to login:
-
-```python
-from huggingface_hub import notebook_login
-
-notebook_login()
-```
-
-In a terminal, you can run:
-
-```bash
-huggingface-cli login
-```
-
-In both cases, you should be prompted for your username and password, which are the same ones you use to log in to the Hub. If you do not have a Hub profile yet, you should create one [here](https://huggingface.co/join).
-
-Great! You now have your authentication token stored in your cache folder. Let's create some repositories!
-
-{#if fw === 'pt'}
-
-If you have played around with the `Trainer` API to train a model, the easiest way to upload it to the Hub is to set `push_to_hub=True` when you define your `TrainingArguments`:
-
-```py
-from transformers import TrainingArguments
-
-training_args = TrainingArguments(
-    "bert-finetuned-mrpc", save_strategy="epoch", push_to_hub=True
-)
-```
-
-When you call `trainer.train()`, the `Trainer` will then upload your model to the Hub each time it is saved (here every epoch) in a repository in your namespace. That repository will be named like the output directory you picked (here `bert-finetuned-mrpc`) but you can choose a different name with `hub_model_id = "a_different_name"`.
-
-To upload your model to an organization you are a member of, just pass it with `hub_model_id = "my_organization/my_repo_name"`.
-
-Once your training is finished, you should do a final `trainer.push_to_hub()` to upload the last version of your model. It will also generate a model card with all the relevant metadata, reporting the hyperparameters used and the evaluation results! Here is an example of the content you might find in a such a model card:
-
-<div class="flex justify-center">
-  <img src="https://huggingface.co/datasets/huggingface-course/documentation-images/resolve/main/en/chapter4/model_card.png" alt="An example of an auto-generated model card." width="100%"/>
-</div>
-
-{:else}
-
-If you are using Keras to train your model, the easiest way to upload it to the Hub is to pass along a `PushToHubCallback` when you call `model.fit()`:
-
-```py
-from transformers import PushToHubCallback
-
-callback = PushToHubCallback(
-    "bert-finetuned-mrpc", save_strategy="epoch", tokenizer=tokenizer
-)
-```
-
-Then you should add `callbacks=[callback]` in your call to `model.fit()`. The callback will then upload your model to the Hub each time it is saved (here every epoch) in a repository in your namespace. That repository will be named like the output directory you picked (here `bert-finetuned-mrpc`) but you can choose a different name with `hub_model_id = "a_different_name"`.
-
-To upload you model to an organization you are a member of, just pass it with `hub_model_id = "my_organization/my_repo_name"`.
-
-{/if}
-
-At a lower level, accessing the Model Hub can be done directly on models, tokenizers, and configuration objects via their `push_to_hub()` method. This method takes care of both the repository creation and pushing the model and tokenizer files directly to the repository. No manual handling is required, unlike with the API we'll see below.
-
-To get an idea of how it works, let's first initialize a model and a tokenizer:
-
-{#if fw === 'pt'}
-```py
-from transformers import AutoModelForMaskedLM, AutoTokenizer
-
-checkpoint = "camembert-base"
-
-model = AutoModelForMaskedLM.from_pretrained(checkpoint)
-tokenizer = AutoTokenizer.from_pretrained(checkpoint)
-```
-{:else}
-```py
-from transformers import TFAutoModelForMaskedLM, AutoTokenizer
-
-checkpoint = "camembert-base"
-
-model = TFAutoModelForMaskedLM.from_pretrained(checkpoint)
-tokenizer = AutoTokenizer.from_pretrained(checkpoint)
-```
-{/if}
-
-You're free to do whatever you want with these — add tokens to the tokenizer, train the model, fine-tune it. Once you're happy with the resulting model, weights, and tokenizer, you can leverage the `push_to_hub()` method directly available on the `model` object:
-
-```py
-model.push_to_hub("dummy-model")
-```
-
-This will create the new repository `dummy-model` in your profile, and populate it with your model files.
-Do the same with the tokenizer, so that all the files are now available in this repository:
-
-```py
-tokenizer.push_to_hub("dummy-model")
-```
-
-If you belong to an organization, simply specify the `organization` argument to upload to that organization's namespace:
-
-```py
-tokenizer.push_to_hub("dummy-model", organization="huggingface")
-```
-
-If you wish to use a specific Hugging Face token, you're free to specify it to the `push_to_hub()` method as well:
-
-```py
-tokenizer.push_to_hub("dummy-model", organization="huggingface", use_auth_token="<TOKEN>")
-```
-
-Now head to the Model Hub to find your newly uploaded model: *https://huggingface.co/user-or-organization/dummy-model*.
-
-Click on the "Files and versions" tab, and you should see the files visible in the following screenshot:
-
-{#if fw === 'pt'}
-<div class="flex justify-center">
-<img src="https://huggingface.co/datasets/huggingface-course/documentation-images/resolve/main/en/chapter4/push_to_hub_dummy_model.png" alt="Dummy model containing both the tokenizer and model files." width="80%"/>
-</div>
-{:else}
-<div class="flex justify-center">
-<img src="https://huggingface.co/datasets/huggingface-course/documentation-images/resolve/main/en/chapter4/push_to_hub_dummy_model_tf.png" alt="Dummy model containing both the tokenizer and model files." width="80%"/>
-</div>
-{/if}
+What makes this special? You get access to the same models that power many AI applications, completely free. Whether you're a curious beginner or an experienced developer, you can experiment with text generation, image creation, translation, and more.
 
 <Tip>
 
-✏️ **Try it out!** Take the model and tokenizer associated with the `bert-base-cased` checkpoint and upload them to a repo in your namespace using the `push_to_hub()` method. Double-check that the repo appears properly on your page before deleting it.
+**New to AI models?** Think of them as specialized tools - some are great at writing, others at creating images, and some at translating languages. We'll show you how to find and use the right tool for your project.
 
 </Tip>
 
-As you've seen, the `push_to_hub()` method accepts several arguments, making it possible to upload to a specific repository or organization namespace, or to use a different API token. We recommend you take a look at the method specification available directly in the [🤗 Transformers documentation](https://huggingface.co/transformers/model_sharing) to get an idea of what is possible.
+## Let's try some models!
 
-The `push_to_hub()` method is backed by the [`huggingface_hub`](https://github.com/huggingface/huggingface_hub) Python package, which offers a direct API to the Hugging Face Hub. It's integrated within 🤗 Transformers and several other machine learning libraries, like [`allenlp`](https://github.com/allenai/allennlp). Although we focus on the 🤗 Transformers integration in this chapter, integrating it into your own code or library is simple.
+We can use OpenAI's gpt-oss-120b model to generate text. Here, we'll try it within the Hugging Face Playground:
 
-Jump to the last section to see how to upload files to your newly created repository!
+<iframe 
+    src="https://huggingface.co/spaces/huggingface/text-generation-inference" 
+    frameborder="0"
+    width="850"
+    height="450"
+></iframe>
 
-## Using the `huggingface_hub` Python library[[using-the-huggingfacehub-python-library]]
+Now let's try something visual! We can use the [Qwen Image Edit](https://huggingface.co/spaces/Qwen/Qwen-Image-Edit) space to edit images.
 
-The `huggingface_hub` Python library is a package which offers a set of tools for the model and datasets hubs. It provides simple methods and classes for common tasks like 
-getting information about repositories on the hub and managing them. It provides simple APIs that work on top of git to manage those repositories' content and to integrate the Hub
-in your projects and libraries.
+<iframe
+	src="https://qwen-qwen-image-edit.hf.space"
+	frameborder="0"
+	width="850"
+	height="450"
+></iframe>
 
-Similarly to using the `push_to_hub` API, this will require you to have your API token saved in your cache. In order to do this, you will need to use the `login` command from the CLI, as mentioned in the previous section (again, make sure to prepend these commands with the `!` character if running in Google Colab):
+How about some audio? Let's use a text to speech model to generate audio from text.
 
-```bash
-huggingface-cli login
-```
+<iframe
+	src="https://nihalgazi-text-to-speech-unlimited.hf.space"
+	frameborder="0"
+	width="850"
+	height="450"
+></iframe>
 
-The `huggingface_hub` package offers several methods and classes which are useful for our purpose. Firstly, there are a few methods to manage repository creation, deletion, and others:
+## Building with open source models
 
-```python no-format
-from huggingface_hub import (
-    # User management
-    login,
-    logout,
-    whoami,
+Beyond just trying models, you can build your own projects, tools, and applications with them.
 
-    # Repository creation and management
-    create_repo,
-    delete_repo,
-    update_repo_visibility,
+**🌤️ Widgets** - Try models directly in their model cards. This will give a quick overview of what the model can do.
 
-    # And some methods to retrieve/change information about the content
-    list_models,
-    list_datasets,
-    list_metrics,
-    list_repo_files,
-    upload_file,
-    delete_file,
-)
-```
+**🖥️ The Playground** - Try models directly on the website. No coding required! Perfect for exploring what's possible and testing out new ideas.
 
+**🔌 API Calls** - Integrate models into your applications with simple HTTP requests. Great for building apps without managing infrastructure.
 
-Additionally, it offers the very powerful `Repository` class to manage a local repository. We will explore these methods and that class in the next few section to understand how to leverage them.
-
-The `create_repo` method can be used to create a new repository on the hub:
-
-```py
-from huggingface_hub import create_repo
-
-create_repo("dummy-model")
-```
-
-This will create the repository `dummy-model` in your namespace. If you like, you can specify which organization the repository should belong to using the `organization` argument:
-
-```py
-from huggingface_hub import create_repo
-
-create_repo("dummy-model", organization="huggingface")
-```
-
-This will create the `dummy-model` repository in the `huggingface` namespace, assuming you belong to that organization.
-Other arguments which may be useful are:
-
-- `private`, in order to specify if the repository should be visible from others or not.
-- `token`, if you would like to override the token stored in your cache by a given token.
-- `repo_type`, if you would like to create a `dataset` or a `space` instead of a model. Accepted values are `"dataset"` and `"space"`.
-
-Once the repository is created, we should add files to it! Jump to the next section to see the three ways this can be handled.
-
-
-## Using the web interface[[using-the-web-interface]]
-
-The web interface offers tools to manage repositories directly in the Hub. Using the interface, you can easily create repositories, add files (even large ones!), explore models, visualize diffs, and much more.
-
-To create a new repository, visit [huggingface.co/new](https://huggingface.co/new):
-
-<div class="flex justify-center">
-<img src="https://huggingface.co/datasets/huggingface-course/documentation-images/resolve/main/en/chapter4/new_model.png" alt="Page showcasing the model used for the creation of a new model repository." width="80%"/>
-</div>
-
-First, specify the owner of the repository: this can be either you or any of the organizations you're affiliated with. If you choose an organization, the model will be featured on the organization's page and every member of the organization will have the ability to contribute to the repository.
-
-Next, enter your model's name. This will also be the name of the repository. Finally, you can specify whether you want your model to be public or private. Private models are hidden from public view.
-
-After creating your model repository, you should see a page like this:
-
-<div class="flex justify-center">
-<img src="https://huggingface.co/datasets/huggingface-course/documentation-images/resolve/main/en/chapter4/empty_model.png" alt="An empty model page after creating a new repository." width="80%"/>
-</div>
-
-This is where your model will be hosted. To start populating it, you can add a README file directly from the web interface.
-
-<div class="flex justify-center">
-<img src="https://huggingface.co/datasets/huggingface-course/documentation-images/resolve/main/en/chapter4/dummy_model.png" alt="The README file showing the Markdown capabilities." width="80%"/>
-</div>
-
-The README file is in Markdown — feel free to go wild with it! The third part of this chapter is dedicated to building a model card. These are of prime importance in bringing value to your model, as they're where you tell others what it can do.
-
-If you look at the "Files and versions" tab, you'll see that there aren't many files there yet — just the *README.md* you just created and the *.gitattributes* file that keeps track of large files.
-
-<div class="flex justify-center">
-<img src="https://huggingface.co/datasets/huggingface-course/documentation-images/resolve/main/en/chapter4/files.png" alt="The 'Files and versions' tab only shows the .gitattributes and README.md files." width="80%"/>
-</div>
-
-We'll take a look at how to add some new files next.
-
-## Uploading the model files[[uploading-the-model-files]]
-
-The system to manage files on the Hugging Face Hub is based on git for regular files, and git-lfs (which stands for [Git Large File Storage](https://git-lfs.github.com/)) for larger files. 
-
-In the next section, we go over three different ways of uploading files to the Hub: through `huggingface_hub` and through git commands.
-
-### The `upload_file` approach[[the-uploadfile-approach]]
-
-Using `upload_file` does not require git and git-lfs to be installed on your system. It pushes files directly to the 🤗 Hub using HTTP POST requests. A limitation of this approach is that it doesn't handle files that are larger than 5GB in size.
-If your files are larger than 5GB, please follow the two other methods detailed below.
-
-The API may be used as follows:
-
-```py
-from huggingface_hub import upload_file
-
-upload_file(
-    "<path_to_file>/config.json",
-    path_in_repo="config.json",
-    repo_id="<namespace>/dummy-model",
-)
-```
-
-This will upload the file `config.json` available at `<path_to_file>` to the root of the repository as `config.json`, to the `dummy-model` repository.
-Other arguments which may be useful are:
-
-- `token`, if you would like to override the token stored in your cache by a given token.
-- `repo_type`, if you would like to upload to a `dataset` or a `space` instead of a model. Accepted values are `"dataset"` and `"space"`.
-
-
-### The `Repository` class[[the-repository-class]]
-
-The `Repository` class manages a local repository in a git-like manner. It abstracts most of the pain points one may have with git to provide all features that we require. 
-
-Using this class requires having git and git-lfs installed, so make sure you have git-lfs installed (see [here](https://git-lfs.github.com/) for installation instructions) and set up before you begin. 
-
-In order to start playing around with the repository we have just created, we can start by initialising it into a local folder by cloning the remote repository:
-
-```py
-from huggingface_hub import Repository
-
-repo = Repository("<path_to_dummy_folder>", clone_from="<namespace>/dummy-model")
-```
-
-This created the folder `<path_to_dummy_folder>` in our working directory. This folder only contains the `.gitattributes` file as that's the only file created when instantiating the repository through `create_repo`.
-
-From this point on, we may leverage several of the traditional git methods:
-
-```py
-repo.git_pull()
-repo.git_add()
-repo.git_commit()
-repo.git_push()
-repo.git_tag()
-```
-
-And others! We recommend taking a look at the `Repository` documentation available [here](https://github.com/huggingface/huggingface_hub/tree/main/src/huggingface_hub#advanced-programmatic-repository-management) for an overview of all available methods.
-
-At present, we have a model and a tokenizer that we would like to push to the hub. We have successfully cloned the repository, we can therefore save the files within that repository.
-
-We first make sure that our local clone is up to date by pulling the latest changes:
-
-```py
-repo.git_pull()
-```
-
-Once that is done, we save the model and tokenizer files:
-
-```py
-model.save_pretrained("<path_to_dummy_folder>")
-tokenizer.save_pretrained("<path_to_dummy_folder>")
-```
-
-The `<path_to_dummy_folder>` now contains all the model and tokenizer files. We follow the usual git workflow by adding files to the staging area, committing them and pushing them to the hub:
-
-```py
-repo.git_add()
-repo.git_commit("Add model and tokenizer files")
-repo.git_push()
-```
-
-Congratulations! You just pushed your first files on the hub.
-
-### The git-based approach[[the-git-based-approach]]
-
-This is the very barebones approach to uploading files: we'll do so with git and git-lfs directly. Most of the difficulty is abstracted away by previous approaches, but there are a few caveats with the following method so we'll follow a more complex use-case.
-
-Using this class requires having git and git-lfs installed, so make sure you have [git-lfs](https://git-lfs.github.com/) installed (see here for installation instructions) and set up before you begin. 
-
-First start by initializing git-lfs:
-
-```bash
-git lfs install
-```
-
-```bash
-Updated git hooks.
-Git LFS initialized.
-```
-
-Once that's done, the first step is to clone your model repository:
-
-```bash
-git clone https://huggingface.co/<namespace>/<your-model-id>
-```
-
-My username is `lysandre` and I've used the model name `dummy`, so for me the command ends up looking like the following:
-
-```
-git clone https://huggingface.co/lysandre/dummy
-```
-
-I now have a folder named *dummy* in my working directory. I can `cd` into the folder and have a look at the contents:
-
-```bash
-cd dummy && ls
-```
-
-```bash
-README.md
-```
-
-If you just created your repository using Hugging Face Hub's `create_repo` method, this folder should only contain a hidden `.gitattributes` file. If you followed the instructions in the previous section to create a repository using the web interface, the folder should contain a single *README.md* file alongside the hidden `.gitattributes` file, as shown here.
-
-Adding a regular-sized file, such as a configuration file, a vocabulary file, or basically any file under a few megabytes, is done exactly as one would do it in any git-based system. However, bigger files must be registered through git-lfs in order to push them to *huggingface.co*. 
-
-Let's go back to Python for a bit to generate a model and tokenizer that we'd like to commit to our dummy repository:
-
-{#if fw === 'pt'}
-```py
-from transformers import AutoModelForMaskedLM, AutoTokenizer
-
-checkpoint = "camembert-base"
-
-model = AutoModelForMaskedLM.from_pretrained(checkpoint)
-tokenizer = AutoTokenizer.from_pretrained(checkpoint)
-
-# Do whatever with the model, train it, fine-tune it...
-
-model.save_pretrained("<path_to_dummy_folder>")
-tokenizer.save_pretrained("<path_to_dummy_folder>")
-```
-{:else}
-```py
-from transformers import TFAutoModelForMaskedLM, AutoTokenizer
-
-checkpoint = "camembert-base"
-
-model = TFAutoModelForMaskedLM.from_pretrained(checkpoint)
-tokenizer = AutoTokenizer.from_pretrained(checkpoint)
-
-# Do whatever with the model, train it, fine-tune it...
-
-model.save_pretrained("<path_to_dummy_folder>")
-tokenizer.save_pretrained("<path_to_dummy_folder>")
-```
-{/if}
-
-Now that we've saved some model and tokenizer artifacts, let's take another look at the *dummy* folder:
-
-```bash
-ls
-```
-
-{#if fw === 'pt'}
-```bash
-config.json  pytorch_model.bin  README.md  sentencepiece.bpe.model  special_tokens_map.json tokenizer_config.json  tokenizer.json
-```
-
-If you look at the file sizes (for example, with `ls -lh`), you should see that the model state dict file (*pytorch_model.bin*) is the only outlier, at more than 400 MB.
-
-{:else}
-```bash
-config.json  README.md  sentencepiece.bpe.model  special_tokens_map.json  tf_model.h5  tokenizer_config.json  tokenizer.json
-```
-
-If you look at the file sizes (for example, with `ls -lh`), you should see that the model state dict file (*t5_model.h5*) is the only outlier, at more than 400 MB.
-
-{/if}
+**🐍 Python Libraries** - Download and run models locally with full control. Best for custom applications and advanced use cases.
 
 <Tip>
-✏️ When creating the repository from the web interface, the *.gitattributes* file is automatically set up to consider files with certain extensions, such as *.bin* and *.h5*, as large files, and git-lfs will track them with no necessary setup on your side.
-</Tip> 
 
-We can now go ahead and proceed like we would usually do with traditional Git repositories. We can add all the files to Git's staging environment using the `git add` command:
+**Start simple!** Most people begin with browser widgets to understand what models can do, then move to APIs or Python as their projects grow more complex.
 
-```bash
-git add .
+</Tip>
+
+## 🌤️ Widgets - Quick Model Testing
+
+Every model on the Hub has an interactive widget that lets you test it instantly. No account needed, no setup - just type and see what happens!
+
+**How to Use Widgets:**
+1. Visit any model page. For example, [gpt-oss-120b](https://huggingface.co/openai/gpt-oss-120b)
+2. Look for the widget on the right side of the screen
+3. Try the example inputs first, then experiment with your own
+
+**What You Can Try:**
+- **Text models**: Type prompts for stories, questions, or creative writing. For example, [gpt-oss-120b](https://huggingface.co/openai/gpt-oss-120b)
+- **Image models**: Describe what you want to see and get custom images. For example, [Qwen Image Edit](https://huggingface.co/spaces/Qwen/Qwen-Image-Edit)
+- **Text to speech models**: Type in text and get audio. For example, [Kokoro](https://huggingface.co/hexgrad/Kokoro-82M)
+
+<Tip>
+
+**Widget not working?** Some models are popular and may be busy. Try again in a few minutes, or look for similar models that aren't as crowded.
+
+</Tip>
+
+## 🖥️ The Playground - Advanced Experimentation
+
+The Playground takes widgets to the next level with more controls and settings. Perfect for understanding how AI models work and compare them.
+
+**What Makes Playgrounds Special:**
+- **Parameter controls**: Adjust temperature, length, and other settings
+- **Multiple models**: Compare different models side by side
+- **Save and share experiments**: Keep track of what works best
+- **Multiple providers**: Compare different providers and models
+
+<Tip>
+
+**Pro Tips:**
+- Start with default settings, then experiment with one parameter at a time
+- Save combinations that work well for future use
+- Try the same prompt with different models to see how they compare
+
+</Tip>
+
+## 🔌 API Calls - Build Real Applications
+
+Ready to integrate AI into your own applications? APIs let you add AI capabilities with just a few lines of code - no infrastructure management needed!
+
+**How APIs Work:**
+1. Send a request to the model with your input
+2. Get back the AI's response from the API
+3. Use that response in your application
+
+**Simple API Example (Python):**
+
+```python
+from huggingface_hub import InferenceClient
+
+client = InferenceClient()
+response = client.text_generation(
+    "Write a short story about a robot:",
+    model="microsoft/DialoGPT-large"
+)
+print(response)
 ```
 
-We can then have a look at the files that are currently staged:
+**API Benefits:**
+- **No setup**: Models run on Hugging Face servers, not yours
+- **Auto-scaling**: Handles traffic spikes automatically  
+- **Multiple providers**: Choose from Hugging Face, Together AI, and more
+- **Free tier**: Generous limits for experimentation
 
-```bash
-git status
+<Tip>
+
+**Go deeper**: We're moving pretty fast over these topics, but at the end of this chapter we'll dive deep into building AI applications with APIs.
+
+</Tip>
+
+## 🖥️ Local Apps 
+
+Want to run AI models directly on your computer? Local apps let you use Hugging Face models without sending data to remote servers. Perfect for privacy, speed, and cost savings!
+
+**Why Use Local Apps:**
+- **Privacy**: Your data never leaves your machine
+- **Speed**: Your hardware is the limiting factor, not server speed
+- **Control**: Configure models exactly how you want them
+- **Cost**: No API fees for unlimited usage
+
+## How to Get Started
+
+Local apps are applications that can run Hugging Face models directly on your machine. To get started:
+
+1. **Enable local apps** in your [Local Apps settings](https://huggingface.co/settings/local-apps).
+
+![Local Apps](https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/local-apps/settings.png)
+
+1. **Choose a supported model** from the Hub by searching for it.
+
+![Local Apps](https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/local-apps/search_llamacpp.png)
+
+3. **Select the local app** from the "Use this model" dropdown on the model page.
+
+![Local Apps](https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/local-apps/button.png)
+
+4. **Copy and run** the provided command in your terminal.
+
+![Local Apps](https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/local-apps/command.png)
+
+<Tip>
+**New to local apps?** Start with LM Studio or Jan - they have user-friendly interfaces that make getting started easy!
+</Tip>
+
+## Popular Local Apps
+
+### Llama.cpp
+
+High-performance C/C++ library optimized for CPU inference. Based on the [GGUF format](https://huggingface.co/docs/hub/en/gguf) for efficient model loading.
+
+**Best for:** CPU-based inference, maximum performance
+```sh
+# Install with brew (Mac/Linux)
+brew install llama.cpp
+
+# Run a model directly from the Hub
+llama-cli -hf bartowski/Llama-3.2-3B-Instruct-GGUF:Q8_0
 ```
 
-{#if fw === 'pt'}
-```bash
-On branch main
-Your branch is up to date with 'origin/main'.
+### LM Studio
 
-Changes to be committed:
-  (use "git restore --staged <file>..." to unstage)
-  modified:   .gitattributes
-	new file:   config.json
-	new file:   pytorch_model.bin
-	new file:   sentencepiece.bpe.model
-	new file:   special_tokens_map.json
-	new file:   tokenizer.json
-	new file:   tokenizer_config.json
-```
-{:else}
-```bash
-On branch main
-Your branch is up to date with 'origin/main'.
+Desktop application with an intuitive graphical interface for downloading and running local LLMs.
 
-Changes to be committed:
-  (use "git restore --staged <file>..." to unstage)
-  modified:   .gitattributes
-  	new file:   config.json
-	new file:   sentencepiece.bpe.model
-	new file:   special_tokens_map.json
-	new file:   tf_model.h5
-	new file:   tokenizer.json
-	new file:   tokenizer_config.json
-```
-{/if}
+**Best for:** Beginners who want a GUI experience
+- Built-in model browser and downloader
+- Chat interface similar to ChatGPT
+- Developer APIs for integration
 
-Similarly, we can make sure that git-lfs is tracking the correct files by using its `status` command:
+### Jan
+Open-source ChatGPT alternative that runs entirely offline with document chat capabilities.
 
-```bash
-git lfs status
-```
-
-{#if fw === 'pt'}
-```bash
-On branch main
-Objects to be pushed to origin/main:
+**Best for:** Privacy-focused users who want to chat with documents
+- Complete offline operation
+- Upload and chat with your files
+- OpenAI-compatible API server
 
 
-Objects to be committed:
 
-	config.json (Git: bc20ff2)
-	pytorch_model.bin (LFS: 35686c2)
-	sentencepiece.bpe.model (LFS: 988bc5a)
-	special_tokens_map.json (Git: cb23931)
-	tokenizer.json (Git: 851ff3e)
-	tokenizer_config.json (Git: f0f7783)
+<Tip>
+**Model formats matter!** Look for GGUF format models on the Hub - they're optimized for local inference and work with most local apps. You can [browse GGUF models here](https://huggingface.co/models?library=gguf).
+</Tip>
 
-Objects not staged for commit:
+## Finding the Right Model
 
+With over 500,000 models on the Hub, how do you find the right one? Here are some tips:
 
-```
+**Browse by Task:**
+- Use the task categories (text generation, image creation, translation, etc.)
+- Each category shows the most popular and recent models
+- Compare different approaches and performance levels
 
-We can see that all files have `Git` as a handler, except *pytorch_model.bin* and *sentencepiece.bpe.model*, which have `LFS`. Great!
+**Check the Stats:**
+- **Downloads**: Shows community adoption and real-world usage
+- **Likes**: Community feedback and quality indicators
+- **Recent updates**: Active development and maintenance
 
-{:else}
-```bash
-On branch main
-Objects to be pushed to origin/main:
+**Filter by Your Needs:**
+- **Model size**: Smaller for mobile/real-time, larger for complex tasks
+- **Language**: Find models trained on your target languages
+- **License**: Make sure it fits your use case (commercial, research, etc.)
 
+## Your Next Challenge
 
-Objects to be committed:
+Ready to put this knowledge into practice? Pick one approach and try it this week:
 
-	config.json (Git: bc20ff2)
-	sentencepiece.bpe.model (LFS: 988bc5a)
-	special_tokens_map.json (Git: cb23931)
-	tf_model.h5 (LFS: 86fce29)
-	tokenizer.json (Git: 851ff3e)
-	tokenizer_config.json (Git: f0f7783)
+1. **Widget Explorer**: Try 5 different models using their widgets
+2. **API Builder**: Make your first API call and integrate it into a simple app
+3. **Local Runner**: Download a model and run it locally with Python
+4. **Playground Pro**: Experiment with parameters in different playgrounds
 
-Objects not staged for commit:
+<Tip>
+**Start small!** Pick the approach that matches your current skill level. You can always progress to more advanced methods later.
+</Tip>
 
+The world of open-source AI is waiting for you to explore, experiment, and create. Every expert started as a beginner - your journey starts with trying your first model!
 
-```
+---
 
-We can see that all files have `Git` as a handler, except *t5_model.h5*, which has `LFS`. Great!
-
-{/if}
-
-Let's proceed to the final steps, committing and pushing to the *huggingface.co* remote repository:
-
-```bash
-git commit -m "First model version"
-```
-
-{#if fw === 'pt'}
-```bash
-[main b08aab1] First model version
- 7 files changed, 29027 insertions(+)
-  6 files changed, 36 insertions(+)
- create mode 100644 config.json
- create mode 100644 pytorch_model.bin
- create mode 100644 sentencepiece.bpe.model
- create mode 100644 special_tokens_map.json
- create mode 100644 tokenizer.json
- create mode 100644 tokenizer_config.json
-```
-{:else}
-```bash
-[main b08aab1] First model version
- 6 files changed, 36 insertions(+)
- create mode 100644 config.json
- create mode 100644 sentencepiece.bpe.model
- create mode 100644 special_tokens_map.json
- create mode 100644 tf_model.h5
- create mode 100644 tokenizer.json
- create mode 100644 tokenizer_config.json
-```
-{/if}
-
-Pushing can take a bit of time, depending on the speed of your internet connection and the size of your files:
-
-```bash
-git push
-```
-
-```bash
-Uploading LFS objects: 100% (1/1), 433 MB | 1.3 MB/s, done.
-Enumerating objects: 11, done.
-Counting objects: 100% (11/11), done.
-Delta compression using up to 12 threads
-Compressing objects: 100% (9/9), done.
-Writing objects: 100% (9/9), 288.27 KiB | 6.27 MiB/s, done.
-Total 9 (delta 1), reused 0 (delta 0), pack-reused 0
-To https://huggingface.co/lysandre/dummy
-   891b41d..b08aab1  main -> main
-```
-
-{#if fw === 'pt'}
-If we take a look at the model repository when this is finished, we can see all the recently added files:
-
-<div class="flex justify-center">
-<img src="https://huggingface.co/datasets/huggingface-course/documentation-images/resolve/main/en/chapter4/full_model.png" alt="The 'Files and versions' tab now contains all the recently uploaded files." width="80%"/>
-</div>
-
-The UI allows you to explore the model files and commits and to see the diff introduced by each commit:
-
-<div class="flex justify-center">
-<img src="https://huggingface.co/datasets/huggingface-course/documentation-images/resolve/main/en/chapter4/diffs.gif" alt="The diff introduced by the recent commit." width="80%"/>
-</div>
-{:else}
-If we take a look at the model repository when this is finished, we can see all the recently added files:
-
-<div class="flex justify-center">
-<img src="https://huggingface.co/datasets/huggingface-course/documentation-images/resolve/main/en/chapter4/full_model_tf.png" alt="The 'Files and versions' tab now contains all the recently uploaded files." width="80%"/>
-</div>
-
-The UI allows you to explore the model files and commits and to see the diff introduced by each commit:
-
-<div class="flex justify-center">
-<img src="https://huggingface.co/datasets/huggingface-course/documentation-images/resolve/main/en/chapter4/diffstf.gif" alt="The diff introduced by the recent commit." width="80%"/>
-</div>
-{/if}
+*Ready to start building? Visit [huggingface.co/models](https://huggingface.co/models) and begin your AI development journey.*
