@@ -3,57 +3,19 @@
   - local: chapter0/1
     title: Introduction
 
-- title: "1. The Hugging Face Hub"
+- title: "1. Start with the Hugging Face Hub"
   sections:
   - local: chapter1/1
     title: The Hugging Face Hub
   - local: chapter1/2
-    title: Using the Hub
+    title: Join the Hugging Face Community
   - local: chapter1/3
-    title: Sharing pretrained models
+    title: Using the Open Source models
   - local: chapter1/4
-    title: Building a model card
+    title: Sharing what you've built
   - local: chapter1/5
-    title: Part 1 completed!
+    title: Keeping up with AI
   - local: chapter1/6
-    title: End-of-chapter quiz
-
-- title: "2. Debugging and Troubleshooting"
-  sections:
-  - local: chapter2/1
-    title: Introduction
-  - local: chapter2/2
-    title: What to do when you get an error
-  - local: chapter2/3
-    title: Asking for help on the forums
-  - local: chapter2/4
-    title: Debugging the training pipeline
-  - local: chapter2/4_tf
-    title: Debugging the training pipeline (TensorFlow)
-  - local: chapter2/5
-    title: How to write a good issue
-  - local: chapter2/6
-    title: Part 2 completed!
-  - local: chapter2/7
-    title: End-of-chapter quiz
-
-- title: "3. Building Machine Learning Demos with Gradio"
-  sections:
-  - local: chapter3/1
-    title: Introduction to Gradio
-  - local: chapter3/2
-    title: Building your first demo
-  - local: chapter3/3
-    title: Understanding the Interface class
-  - local: chapter3/4
-    title: Sharing demos with others
-  - local: chapter3/5
-    title: Integrations with the Hugging Face Hub
-  - local: chapter3/6
-    title: Advanced Interface features
-  - local: chapter3/7
-    title: Introduction to Blocks
-  - local: chapter3/8
-    title: Part 3 completed!
-  - local: chapter3/9
+    title: Part 1 completed!
+  - local: chapter1/7
     title: End-of-chapter quiz
