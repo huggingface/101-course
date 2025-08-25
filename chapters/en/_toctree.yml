@@ -10,12 +10,10 @@
   - local: chapter1/2
     title: Join the Hugging Face Community
   - local: chapter1/3
-    title: Using the Open Source models
+    title: Using Open Source Models
   - local: chapter1/4
-    title: Sharing what you've built
+    title: Sharing What You've Built
   - local: chapter1/5
-    title: Keeping up with AI
+    title: Chapter 1 Complete!
   - local: chapter1/6
-    title: Part 1 completed!
-  - local: chapter1/7
-    title: End-of-chapter quiz
+    title: End-of-Chapter Quiz

@@ -1,6 +1,6 @@
 # Introduction[[introduction]]
 
-Welcome to Hugging Face 101! This course will teach you everything you need to know about the Hugging Face ecosystem - home to over 1.7 million models, 400k datasets, and 600k interactive demos.
+Welcome to Hugging Face 101! This course will teach you the essentials of the Hugging Face ecosystem — home to hundreds of thousands of models, datasets, and interactive demos.
 
 You'll learn three ways to work with Hugging Face: through the web interface (no coding required), via APIs (for quick integration), or with Python libraries (for full control). Pick the approach that fits your project, or mix and match as needed!
 
@@ -16,7 +16,9 @@ By the end of this course, you'll know how to:
 - **Use Advanced Features**: Explore newer capabilities like the Model Context Protocol (MCP)
 
 <Tip>
+
 **Not sure what some of these terms mean?** Don't worry! We'll explain everything as we go. This course assumes no prior AI experience.
+
 </Tip>
 
 ## Course Structure
@@ -39,7 +41,9 @@ Hugging Face has become the go-to platform for AI development. Think of it as th
 Whether you're new to AI, a developer adding AI features to your app, or a researcher sharing your work, Hugging Face gives you the tools and community to succeed.
 
 <Tip>
-**Why start here?** Most AI breakthroughs get shared on Hugging Face first. Learning this platform means you'll always have access to the latest and greatest in AI.
+
+**Why start here?** Much of today's open AI work is shared on Hugging Face. Learning the platform gives you fast access to new models, datasets, and examples.
+
 </Tip>
 
 ## Choose Your Learning Path
@@ -118,8 +122,8 @@ Install the Hugging Face libraries with pip. In Colab, use `!` before pip comman
 # Core libraries for this course
 !pip install huggingface_hub transformers datasets gradio
 
-# Optional: Advanced features including MCP support
-!pip install "huggingface_hub[inference]"
+# Optional: MCP client and tooling support
+!pip install -U "huggingface_hub[mcp]"
 ```
 
 Test that everything installed correctly:
@@ -143,12 +147,12 @@ print("✅ Ready to go!")
 
 ### What Each Library Does
 
-- **`huggingface_hub`**: Your connection to the Hub - handles authentication, downloads, uploads, and includes MCP support
+- **`huggingface_hub`**: Your connection to the Hub — handles authentication, downloads, uploads. MCP support is available via the optional `mcp` extra
 - **`transformers`**: Thousands of pre-trained models for text, images, audio, and more
 - **`datasets`**: Easy access to datasets and tools for processing your own data  
 - **`gradio`**: Build interactive web demos with just a few lines of code
 
-The optional `huggingface_hub[inference]` package adds support for the new [Model Context Protocol (MCP)](https://huggingface.co/docs/huggingface_hub/en/package_reference/mcp), which lets AI models connect to external tools and data sources.
+To use the [Model Context Protocol (MCP)](https://huggingface.co/docs/huggingface_hub/en/package_reference/mcp) client and tiny-agents, install the `mcp` extra: `pip install -U "huggingface_hub[mcp]"`.
 
 You're now ready for all the projects in this course!
 
@@ -194,7 +198,7 @@ Now install the same Hugging Face libraries:
 
 ```bash
 pip install huggingface_hub transformers datasets gradio
-pip install "huggingface_hub[inference]"  # Optional MCP support
+pip install -U "huggingface_hub[mcp]"  # Optional MCP support
 ```
 
 Test the installation:
@@ -229,4 +233,4 @@ You're ready to start! Here's where to go based on your chosen path:
 
 The great thing about Hugging Face is that all these approaches work together. Start simple, then add complexity as your projects grow.
 
-**Ready? Let's dive into the Hugging Face ecosystem! 🚀**
+Let's get started.

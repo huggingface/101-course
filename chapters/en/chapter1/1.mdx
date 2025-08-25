@@ -1,6 +1,6 @@
 # The Hugging Face Hub
 
-Welcome to the Hugging Face Hub! 🤗
+Welcome to the Hugging Face Hub.
 
 The Hugging Face Hub is a collaborative platform for artificial intelligence development and deployment. It serves as a centralized repository where developers, researchers, and organizations share machine learning models, datasets, and applications.
 
@@ -8,7 +8,7 @@ The platform functions as a version-controlled repository system for AI resource
 
 <Tip>
 
-It's not just about software and data! The hub is also full of demos, blog posts, papers, and posts that anyone can read and understand on their journey.
+It's not just for engineers! The Hub also includes demos, blog posts, and papers that you can read as you learn.
 
 </Tip>
 
@@ -22,7 +22,7 @@ The platform uses Git-based version control, applying software development pract
 
 <Tip>
 
-What makes this community special? It's simple: everyone shares their work openly. Students collaborate with researchers, startups use the same tools as big tech companies, and knowledge flows freely across all experience levels. Let's get you connected!
+People share their work openly. Students collaborate with researchers; small teams use the same tools as large companies.
 
 </Tip>
 
@@ -30,35 +30,35 @@ What makes this community special? It's simple: everyone shares their work openl
 
 The Hub's architecture is built around three fundamental pillars that work together to create a complete AI ecosystem. Understanding these pillars is crucial for anyone looking to participate in this collaborative environment.
 
-**Models** form the first pillar, the hub contains the largest collection of pre-trained AI models. These models cover major AI tasks including natural language processing for text understanding and generation, computer vision for image analysis, and audio processing for speech and music tasks. Available models include text generation, image creation, translation systems for many languages, and code generation tools. For example, OpenAI [gpt-oss](https://huggingface.co/openai/gpt-oss-120b) is available on the hub.
+**Models** form the first pillar. Models cover text, vision, audio, and multimodal tasks. Examples include text generation, image creation, translation, and code generation. For instance, see [`openai/gpt-oss-120b`](https://huggingface.co/openai/gpt-oss-120b).
 
-**Datasets** comprise the second pillar, providing training and evaluation data for machine learning development. As well as datasets for analysis, observation, and archive; for example, [NASA shares some amazing datasets](https://huggingface.co/nasa-impact).
+**Datasets** comprise the second pillar, providing training and evaluation data. There are also curated and archival datasets; for example, see [`nasa-impact`](https://huggingface.co/nasa-impact).
 
 These datasets include text collections for language models, image repositories for computer vision, audio datasets for speech processing, and multilingual collections. The quality and variety of these datasets affect the capabilities of models trained on them.
 
-**Spaces** represent the third pillar, providing interactive applications that demonstrate AI models. These Spaces allow users to try models without technical setup, share applications, learn from community examples, and showcase AI projects. They serve as a bridge between AI technology and user-friendly applications. For example, you can edit images with AI models in [Qwen Edit](https://huggingface.co/spaces/Qwen/Qwen-Image-Edit).
+**Spaces** are interactive applications that demonstrate models. They let you try models without setup and share applications. For example, you can edit images in [`Qwen/Qwen-Image-Edit`](https://huggingface.co/spaces/Qwen/Qwen-Image-Edit).
 
 ## Advanced Integration Capabilities
 
-The Hub's integration capabilities extend beyond basic hosting. The platform supports the Model Context Protocol (MCP), which enables AI models to connect to the Hub and spaces on it. This integration allows for real-time information access and specialized usage of spaces. For example, AI tools like ChatGPT can use the Hub to access models or use spaces as tools.
+The Hub supports the Model Context Protocol (MCP) via the `huggingface_hub[mcp]` extra. This enables LLMs to call tools exposed by MCP servers, including MCP-enabled Spaces.
 
-The Hub offers AI inference via specialized providers, allowing developers to choose options for their specific needs. This includes free tiers for experimentation, enterprise scaling for production applications, and specialized hardware acceleration for demanding workloads.
+For inference, you can route requests through different providers. Use `provider="auto"` (default) to pick the first available provider per your preferences, or select a specific provider in code.
 
 ## Why the Hub Matters for Everyone
 
-The Hugging Face Hub serves different user communities. For beginners learning AI, the Hub offers opportunities to learn by trying models directly in the browser without complex installations or expensive hardware. Documentation and community support help newcomers understand how to use the platform.
+Beginners can learn by trying models in the browser without installation. Documentation and community support help you get unstuck.
 
-Professional developers can use the Hub's integration capabilities to incorporate models into applications with relatively simple code. The API infrastructure allows prototypes to scale to production. The platform supports multiple programming languages and frameworks.
+Developers can integrate models with a few API calls and scale to production.
 
-For researchers and academics, the Hub provides a platform for collaboration and knowledge sharing. Models and datasets can be published with reproducibility features, allowing others to build upon previous work. Papers can be shared with the community, and the platform can reference assets like models and datasets from the paper. The platform's reach helps research have broader impact in the field.
+Researchers can publish models and datasets with documentation and evaluation artifacts for reproducibility.
 
 ## The Power of Open Source Innovation
 
-The Hub follows open source principles, promoting transparency in AI development. Unlike closed systems, the Hub allows users to examine how models work, understand their training processes, and identify potential limitations or biases. This transparency helps build trust in AI systems and supports responsible use. The open source model of the Hubmakes AI development more accessible. Small teams and individual researchers can access the same tools and models used by large corporations, which helps level the playing field for innovation.
+The Hub follows open-source principles, promoting transparency. Users can examine training processes and limitations, which supports responsible use.
 
 <Tip>
 
-The collaborative nature of open source development helps accelerate innovation. When researchers and developers can build upon each other's work, the rate of discovery and improvement increases. 
+The collaborative nature of open source development helps accelerate innovation. When researchers and developers can build upon each other's work, the rate of discovery and improvement increases.
 
 </Tip>
 

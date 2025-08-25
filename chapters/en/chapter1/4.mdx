@@ -1,6 +1,6 @@
 # Sharing What You've Built
 
-Ready to contribute to the AI community? Sharing your work on Hugging Face is how you go from AI user to AI contributor. Whether you've created a cool demo, fine-tuned a model, or collected a useful dataset, the community wants to see what you've built! 🌟
+Ready to contribute to the AI community? Sharing your work on Hugging Face helps others learn and gives you useful feedback. Whether you've created a cool demo, fine-tuned a model, or collected a useful dataset, the community wants to see what you've built! 🌟
 
 Sharing your work helps others learn, gives you feedback to improve, and builds your reputation in the AI community. Plus, it's easier than you might think.
 
@@ -16,7 +16,7 @@ There are three main ways to share your AI work on Hugging Face:
 
 <Tip>
 
-**Start with Spaces!** They're the most visible and engaging way to share your work. People love trying interactive demos, and they're great for your portfolio.
+Spaces are a visible way to share your work. Interactive demos are useful for portfolios and feedback.
 
 </Tip>
 
@@ -32,8 +32,8 @@ Spaces are the easiest and most visible way to share your AI work. Here's how to
 
 **2. Create Your Space**
 1. Go to [huggingface.co/new-space](https://huggingface.co/new-space)
-2. Choose your framework and make it public
-3. Write your app code in the main file. For example, drop in an `index.html` file with `<h1>Hello World</h1>` in it.
+2. Choose your framework and visibility (public or private)
+3. Write your app code in the main file (for example, an `index.html` with `<h1>Hello World</h1>`)
 4. Push your changes - your Space will build and deploy automatically!
 
 **3. Make It Great**
@@ -44,7 +44,7 @@ Spaces are the easiest and most visible way to share your AI work. Here's how to
 
 ## Sharing your first dataset
 
-Beginners can also share datasets by uploading them to the Hub. They don't need to be massive LLM training datasets, maybe your favorite recipes or stats from a project you're working on.
+You can share small datasets too — they don't need to be large LLM training corpora.
 
 **Uploading Datasets:**
 1. Go to [huggingface.co/new-dataset](https://huggingface.co/new-dataset)  
@@ -52,7 +52,7 @@ Beginners can also share datasets by uploading them to the Hub. They don't need 
 3. Write a Dataset Card describing the data and how it was collected
 4. Include licensing information and any usage restrictions
 
-**Writing Great Documentation:**
+**Documentation tips:**
 - Explain what your model/dataset does in simple terms
 - Include example usage code
 - Be honest about limitations and potential biases  
@@ -235,7 +235,7 @@ Once your basic Space is working, try these improvements:
 4. **More Interactions**: Add filtering by population range or GDP
 
 <Tip>
-**Space not working?** Check the "Logs" tab in your Space for error messages. Common issues include missing dependencies in `requirements.txt` or syntax errors in your code.
+**Space not working?** Check the "Logs" tab in your Space for errors. Common issues include missing dependencies in `requirements.txt` or syntax errors.
 </Tip>
 
 ### Step 5: Share and Engage
@@ -271,17 +271,17 @@ An AI-powered meeting assistant that:
 - Generates summaries with action items using a language model
 - Deploys as a public web application
 
-This demonstrates real-world AI orchestration using multiple specialized providers within a single application.
+This demonstrates using multiple providers within a single application.
 
 <hfoptions id="tech-stack">
 <hfoption id="python">
 
-**Tech Stack**: Gradio (for the UI) + Inference Providers (for the AI)
+**Tech Stack**: Gradio (UI) + Inference Providers (AI)
 
 </hfoption>
 <hfoption id="javascript">
 
-**Tech Stack**: HTML/JavaScript (for the UI) + Inference Providers (for the AI)
+**Tech Stack**: HTML/JavaScript (UI) + Inference Providers (AI)
 
 We'll use HTML and JavaScript for the UI just to keep things simple and agnostic, but if you want to see more mature examples, you can check out the [Hugging Face JS spaces](https://huggingface.co/huggingfacejs/spaces) page.
 
@@ -293,19 +293,19 @@ We'll use HTML and JavaScript for the UI just to keep things simple and agnostic
 <hfoptions id="auth">
 <hfoption id="python">
 
-Before we start coding, authenticate with Hugging Face using the CLI:
+Authenticate with Hugging Face using the CLI:
 
 ```bash
 pip install huggingface_hub
 hf auth login
 ```
 
-When prompted, paste your Hugging Face token. This handles authentication automatically for all your inference calls. You can generate one from [your settings page](https://huggingface.co/settings/tokens/new?ownUserPermissions=inference.serverless.write&tokenType=fineGrained).
+When prompted, paste your Hugging Face token. Generate one from [your settings](https://huggingface.co/settings/tokens).
 
 </hfoption>
 <hfoption id="javascript">
 
-You'll need your Hugging Face token. Get one from [your settings page](https://huggingface.co/settings/tokens/new?ownUserPermissions=inference.serverless.write&tokenType=fineGrained). We can set it as an environment variable in our app.
+You'll need your Hugging Face token. Get one from [your settings](https://huggingface.co/settings/tokens). Set it as an environment variable in your app.
 
 ```bash
 export HF_TOKEN="your_token_here"
@@ -318,7 +318,7 @@ const HF_TOKEN = process.env.HF_TOKEN;
 
 <Tip warning={true}>
 
-When we deploy our app to Hugging Face Spaces, we'll need to add our token as a secret. This is a secure way to handle the token and avoid exposing it in the code.
+When deploying to Spaces, add your token as a secret to avoid exposing it in code.
 
 </Tip>
 
@@ -330,7 +330,7 @@ When we deploy our app to Hugging Face Spaces, we'll need to add our token as a 
 <hfoptions id="ui">
 <hfoption id="python">
 
-Now let's create a simple web interface using Gradio:
+Create a simple web interface using Gradio:
 
 ```python
 import gradio as gr
@@ -360,7 +360,7 @@ if __name__ == "__main__":
     app.launch()
 ```
 
-Here we're using Gradio's `gr.Audio` component to either upload an audio file or use the microphone input. We're keeping things simple with two outputs: a transcript and a summary with action items.
+This uses Gradio's `gr.Audio` component for upload or microphone input, with two outputs: transcript and summary.
 
 </hfoption>
 <hfoption id="javascript">
@@ -394,7 +394,7 @@ For JavaScript, we'll create a clean HTML interface with native file upload and 
 
 This creates a clean drag-and-drop interface with styled results sections for the transcript and summary.
 
-Our application can then use the `InferenceClient` from `huggingface.js` to call the transcription and summarization functions.
+Use the `InferenceClient` from `@huggingface/inference` to call transcription and summarization.
 
 ```javascript
 import { InferenceClient } from 'https://esm.sh/@huggingface/inference';
@@ -413,9 +413,14 @@ document.getElementById('file').onchange = async (e) => {
     hide(document.getElementById('results'), document.getElementById('error'));
     
     try {
+        console.log('🎤 Starting transcription...');
         const transcript = await transcribe(file);
+        console.log('✅ Transcription completed:', transcript.substring(0, 100) + '...');
+        
+        console.log('🖊️ Starting summarization...');
         const summary = await summarize(transcript);
-
+        console.log('✅ Summary completed:', summary.substring(0, 100) + '...');
+        
         document.getElementById('transcript').textContent = transcript;
         document.getElementById('summary').textContent = summary;
         
@@ -426,9 +431,62 @@ document.getElementById('file').onchange = async (e) => {
         showError(`Error: ${error.message}`);
     }
 };
+
+async function transcribe(file) {
+    const client = new InferenceClient(HF_TOKEN);
+
+    const output = await client.automaticSpeechRecognition({
+        data: file,
+        model: "openai/whisper-large-v3-turbo",
+        provider: "auto"
+    });
+    
+    return output.text || output || 'Transcription completed';
+}
+
+async function summarize(transcript) {
+    const client = new InferenceClient(HF_TOKEN);
+
+    const prompt = `Analyze this meeting transcript and provide:
+    1. A concise summary of key points
+    2. Action items with responsible parties
+    3. Important decisions made
+
+    Transcript: ${transcript}
+
+    Format with clear sections:
+    ## Summary
+    ## Action Items  
+    ## Decisions Made`;
+
+    const response = await client.chatCompletion({
+        model: "deepseek-ai/DeepSeek-V3-0324",
+        messages: [
+            {
+                role: "user", 
+                content: prompt
+            }
+        ],
+        max_tokens: 1000
+    }, {
+        provider: "auto"
+    });
+    
+    return response.choices?.[0]?.message?.content || response || 'No summary available';
+}
+
+const show = el => el.style.display = 'block';
+const hide = (...els) => els.forEach(el => el.style.display = 'none');
+const showError = msg => {
+    const error = document.getElementById('error');
+    error.innerHTML = msg;
+    show(error);
+};
 ```
 
-We'll also need to implement the `transcribe` and `summarize` functions.
+We can run our app locally by going to the file from our browser.
+
+![Local app](https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/inference-providers-guides/js-app.png)
 
 </hfoption>
 </hfoptions>
@@ -438,7 +496,7 @@ We'll also need to implement the `transcribe` and `summarize` functions.
 <hfoptions id="transcription">
 <hfoption id="python">
 
-Now let's implement the transcription using OpenAI's `whisper-large-v3` model for fast, reliable speech processing.
+Implement transcription using OpenAI's `whisper-large-v3` (or `-v3-turbo`) for speech recognition.
 
 <Tip>
 
@@ -497,7 +555,7 @@ async function transcribe(file) {
 <hfoptions id="summarization">
 <hfoption id="python">
 
-Next, we'll use a powerful language model like `deepseek-ai/DeepSeek-R1-0528` from DeepSeek via an Inference Provider, and just like in the previous step, we'll use the `auto` provider to automatically select the first available provider for the model.
+Next, use a widely available language model like `deepseek-ai/DeepSeek-V3-0324` via an Inference Provider. Use `provider="auto"` to select an available provider.
 We will define a custom prompt to ensure the output is formatted as a summary with action items and decisions made:
 
 ```python
@@ -519,8 +577,8 @@ def generate_summary(transcript):
     ## Decisions Made
     """
     
-    response = client.chat.completions.create(
-        model="deepseek-ai/DeepSeek-R1-0528",
+    response = client.chat_completion(
+        model="deepseek-ai/DeepSeek-V3-0324",
         messages=[{"role": "user", "content": prompt}],
         max_tokens=1000
     )
@@ -532,7 +590,7 @@ def generate_summary(transcript):
 </hfoption>
 <hfoption id="javascript">
 
-Next, we'll use a powerful language model like `deepseek-ai/DeepSeek-R1-0528` from DeepSeek via an Inference Provider, and just like in the previous step, we'll use the `auto` provider to automatically select the first available provider for the model.
+Next, use a language model like `deepseek-ai/DeepSeek-V3-0324` via an Inference Provider, with `provider: "auto"`.
 We will define a custom prompt to ensure the output is formatted as a summary with action items and decisions made:
 
 ```javascript
@@ -552,7 +610,7 @@ async function summarize(transcript) {
     ## Decisions Made`;
 
     const response = await client.chatCompletion({
-        model: "deepseek-ai/DeepSeek-R1-0528",
+        model: "deepseek-ai/DeepSeek-V3-0324",
         messages: [
             {
                 role: "user", 
@@ -617,8 +675,8 @@ def generate_summary(transcript):
     ## Decisions Made
     """
 
-    response = client.chat.completions.create(
-        model="deepseek-ai/DeepSeek-R1-0528",
+    response = client.chat_completion(
+        model="deepseek-ai/DeepSeek-V3-0324",
         messages=[{"role": "user", "content": prompt}],
         max_tokens=1000,
     )
@@ -793,7 +851,7 @@ For JavaScript deployment, create a simple static HTML file:
             ## Decisions Made`;
 
             const response = await client.chatCompletion({
-                model: "deepseek-ai/DeepSeek-R1-0528",
+                model: "deepseek-ai/DeepSeek-V3-0324",
                 messages: [
                     {
                         role: "user", 
