@@ -12,7 +12,7 @@ jobs:
       commit_sha: ${{ github.sha }}
       package: 101-course
       package_name: 101-course
-      path_to_docs: 101-course/units/
+      path_to_docs: 101-course/chapters/
       additional_args: --not_python_module
       languages: en
     secrets:
