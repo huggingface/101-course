@@ -1,55 +1,70 @@
-# Chapter 1 Complete
+# Hugging Face MCP Server
 
-You've finished your introduction to the Hugging Face ecosystem. You now know how to:
-
-✅ Navigate the Hub and find models, datasets, and Spaces  
-✅ Join and participate in the AI community  
-✅ Use AI models through widgets, APIs, and code  
-✅ Share your own work with the world
-
-This is a solid foundation for the rest of the course.
-
-## What's Next?
-
-Ready to level up? Here's what awaits in the upcoming chapters:
-
-**Chapter 2: Inference Providers** — Use AI APIs for applications
-
-**Chapter 3: Sharing Models** — Manage model lifecycle, from training to deployment
-
-**Chapter 4: Sharing Datasets** — Prepare, document, and share datasets
-
-**Bonus Chapters** — Build demos with Gradio and deploy at scale
+The Hugging Face MCP (Model Context Protocol) Server connects your MCP‑compatible AI assistant (for example VS Code, Cursor, Zed, or Claude Desktop) directly to the Hugging Face Hub. Once connected, your assistant can search and explore Hub resources and use community tools, all from within your editor, chat or CLI.
 
 <Tip>
-Take a break. Try some models, join the Discord, or create a first Space before moving on.
+
+The main advanatage of the Hugging Face MCP Server is that it provides a built-in tools for the hub as well as community tools based on Gradio Spaces. As we start to build our own MCP servers, we'll see that we can use the Hugging Face MCP Server as a reference for our own MCP servers.
+
 </Tip>
 
-## Quick Review
+## What you can do
 
-Before moving on, make sure you can do these things:
+- Search and explore Hub resources: models, datasets, Spaces, and papers.
+- Run community tools via MCP‑compatible Gradio apps hosted on [Spaces](https://hf.co/spaces).
+- Bring results back into your assistant with metadata, links, and context.
 
-- [ ] Find and try a model using its interactive widget
-- [ ] Navigate to the Community tab and read a discussion  
-- [ ] Explain the difference between models, datasets, and Spaces
-- [ ] Know where to go to create your first Space or upload a model
+## Built-in tools
 
-If any of these feel unclear, take a few minutes to review the relevant sections.
+The server provides curated tools that work across supported clients:
 
-## Your Next Steps
+- Models search and exploration (filter by task, library, downloads, likes)
+- Datasets search and exploration (filter by tags, size, modality)
+- Spaces semantic search (find apps by capability, e.g., TTS, ASR, OCR)
+- Papers semantic search (discover relevant research on the Hub)
 
-**This Week:**
-- Try 2-3 different types of models (text, image, audio)
-- Join the [Hugging Face Discord](https://discord.com/invite/JfAtkvEtRb)
-- Bookmark some interesting models or creators to follow
+## Get started
 
-**This Month:**
-- Create your first Space or contribute to a discussion
-- Share something you've learned on social media
-- Start thinking about a project you'd like to build
+1. Open your MCP settings: visit https://huggingface.co/settings/mcp while logged in.
 
-The AI community is waiting for you! 🤗
+2. Pick your client: select your MCP‑compatible client (for example VS Code, Cursor, Zed, Claude Desktop). The page shows client‑specific instructions and a ready‑to‑copy configuration snippet.
 
----
+3. Paste and restart: copy the snippet into your client’s MCP configuration, save, and restart/reload the client. You should see “Hugging Face” (or similar) listed as a connected MCP server in your client.
 
-*Ready for advanced topics? Continue to [Chapter 2: Inference Providers](/course/chapter2/1) to learn about production AI APIs.*
+<Tip>
+
+The settings page generates the exact configuration your client expects. Use it rather than writing config by hand.
+
+</Tip>
+
+![MCP Settings Example](https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/hf-mcp-settings.png)
+
+## Using the server
+
+After connecting, ask your assistant to use the Hugging Face tools. Example prompts:
+
+- “Search Hugging Face models for Qwen 3 quantizations.”
+- “Find a Space that can transcribe audio files.”
+- “Show datasets about weather time‑series.”
+- “Create a 1024 × 1024 image of a cat in Ghibli style.”
+
+Your assistant will call MCP tools exposed by the Hugging Face MCP Server (including Spaces) and return results (titles, owners, downloads, links, and so on). You can then open the resource on the Hub or continue iterating in the same chat.
+
+![HF MCP with Spaces in VS Code](https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/hf-mcp-vscode.png)
+
+## Add community tools (Spaces)
+
+You can extend your setup with MCP‑compatible Gradio Spaces built by the community:
+
+- Explore Spaces with MCP support [here](https://huggingface.co/spaces?search=mcp).
+- Add the relevant space in your MCP settings on Hugging Face [here](https://huggingface.co/settings/mcp).
+
+Gradio MCP apps expose their functions as tools (with arguments and descriptions) so your assistant can call them directly. Please, restart or refresh your client so it picks up new tools you add.
+
+## Learn more
+
+- Settings and client setup: https://huggingface.co/settings/mcp
+- Changelog announcement: https://huggingface.co/changelog/hf-mcp-server
+- HF MCP Server documentation: https://huggingface.co/docs/hub/en/hf-mcp-server
+- Building your own MCP server with Gradio and Hub tools: https://huggingface.co/docs/hub/main/agents
+
