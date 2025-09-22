@@ -1,96 +1,194 @@
-<FrameworkSwitchCourse {fw} />
+# Join the Hugging Face Community
 
-# Using pretrained models[[using-pretrained-models]]
-
-{#if fw === 'pt'}
-
-<CourseFloatingBanner chapter={1}
-  classNames="absolute z-10 right-0 top-0"
-  notebooks={[
-    {label: "Google Colab", value: "https://colab.research.google.com/github/huggingface/notebooks/blob/master/course/en/chapter4/section2_pt.ipynb"},
-    {label: "Aws Studio", value: "https://studiolab.sagemaker.aws/import/github/huggingface/notebooks/blob/master/course/en/chapter4/section2_pt.ipynb"},
-]} />
-
-{:else}
-
-<CourseFloatingBanner chapter={1}
-  classNames="absolute z-10 right-0 top-0"
-  notebooks={[
-    {label: "Google Colab", value: "https://colab.research.google.com/github/huggingface/notebooks/blob/master/course/en/chapter4/section2_tf.ipynb"},
-    {label: "Aws Studio", value: "https://studiolab.sagemaker.aws/import/github/huggingface/notebooks/blob/master/course/en/chapter4/section2_tf.ipynb"},
-]} />
-
-{/if}
-
-The Model Hub makes selecting the appropriate model simple, so that using it in any downstream library can be done in a few lines of code. Let's take a look at how to actually use one of these models, and how to contribute back to the community.
-
-Let's say we're looking for a French-based model that can perform mask filling.
-
-<div class="flex justify-center">
-<img src="https://huggingface.co/datasets/huggingface-course/documentation-images/resolve/main/en/chapter4/camembert.gif" alt="Selecting the Camembert model." width="80%"/>
-</div>
-
-We select the `camembert-base` checkpoint to try it out. The identifier `camembert-base` is all we need to start using it! As you've seen in previous chapters, we can instantiate it using the `pipeline()` function:
-
-```py
-from transformers import pipeline
-
-camembert_fill_mask = pipeline("fill-mask", model="camembert-base")
-results = camembert_fill_mask("Le camembert est <mask> :)")
-```
-
-```python out
-[
-  {'sequence': 'Le camembert est délicieux :)', 'score': 0.49091005325317383, 'token': 7200, 'token_str': 'délicieux'}, 
-  {'sequence': 'Le camembert est excellent :)', 'score': 0.1055697426199913, 'token': 2183, 'token_str': 'excellent'}, 
-  {'sequence': 'Le camembert est succulent :)', 'score': 0.03453313186764717, 'token': 26202, 'token_str': 'succulent'}, 
-  {'sequence': 'Le camembert est meilleur :)', 'score': 0.0330314114689827, 'token': 528, 'token_str': 'meilleur'}, 
-  {'sequence': 'Le camembert est parfait :)', 'score': 0.03007650189101696, 'token': 1654, 'token_str': 'parfait'}
-]
-```
-
-As you can see, loading a model within a pipeline is extremely simple. The only thing you need to watch out for is that the chosen checkpoint is suitable for the task it's going to be used for. For example, here we are loading the `camembert-base` checkpoint in the `fill-mask` pipeline, which is completely fine. But if we were to load this checkpoint in the `text-classification` pipeline, the results would not make any sense because the head of `camembert-base` is not suitable for this task! We recommend using the task selector in the Hugging Face Hub interface in order to select the appropriate checkpoints:
-
-<div class="flex justify-center">
-<img src="https://huggingface.co/datasets/huggingface-course/documentation-images/resolve/main/en/chapter4/tasks.png" alt="The task selector on the web interface." width="80%"/>
-</div>
-
-You can also instantiate the checkpoint using the model architecture directly:
-
-{#if fw === 'pt'}
-```py
-from transformers import CamembertTokenizer, CamembertForMaskedLM
-
-tokenizer = CamembertTokenizer.from_pretrained("camembert-base")
-model = CamembertForMaskedLM.from_pretrained("camembert-base")
-```
-
-However, we recommend using the [`Auto*` classes](https://huggingface.co/transformers/model_doc/auto?highlight=auto#auto-classes) instead, as these are by design architecture-agnostic. While the previous code sample limits users to checkpoints loadable in the CamemBERT architecture, using the `Auto*` classes makes switching checkpoints simple:
-
-```py
-from transformers import AutoTokenizer, AutoModelForMaskedLM
-
-tokenizer = AutoTokenizer.from_pretrained("camembert-base")
-model = AutoModelForMaskedLM.from_pretrained("camembert-base")
-```
-{:else}
-```py
-from transformers import CamembertTokenizer, TFCamembertForMaskedLM
-
-tokenizer = CamembertTokenizer.from_pretrained("camembert-base")
-model = TFCamembertForMaskedLM.from_pretrained("camembert-base")
-```
-
-However, we recommend using the [`TFAuto*` classes](https://huggingface.co/transformers/model_doc/auto?highlight=auto#auto-classes) instead, as these are by design architecture-agnostic. While the previous code sample limits users to checkpoints loadable in the CamemBERT architecture, using the `TFAuto*` classes makes switching checkpoints simple:
-
-```py
-from transformers import AutoTokenizer, TFAutoModelForMaskedLM
-
-tokenizer = AutoTokenizer.from_pretrained("camembert-base")
-model = TFAutoModelForMaskedLM.from_pretrained("camembert-base")
-```
-{/if}
+Ready to join the AI community? The Hugging Face community is where developers, researchers, and practitioners share models, datasets, and ideas. Whether you're building a first demo or publishing research, you'll find tools and people to help.
 
 <Tip>
-When using a pretrained model, make sure to check how it was trained, on which datasets, its limits, and its biases. All of this information should be indicated on its model card.
+
+New to AI? Start by exploring models on the Hub and ask questions in discussions.
+
 </Tip>
+
+## How the Community Works
+
+Sharing drives progress. Someone uploads a model, others try it and suggest improvements, researchers share reproducible code, and the next iteration builds on it. It's open-source development applied to AI.
+
+The community runs on mutual help. Experienced developers create tutorials, answer questions, and mentor newcomers. New users bring fresh perspectives and test models in unexpected ways. This creates a learning environment where everyone benefits.
+
+<Tip>
+
+Not sure how to contribute? Start small: test a model with your data, report issues, or improve unclear docs.
+
+</Tip>
+
+## Getting Started: Create Your Account
+
+Create a Hugging Face account: [huggingface.co/join](https://huggingface.co/join).
+
+<Tip>
+
+If you're part of a school, university, or company then use your organization email to easily find and join your friends and colleagues!
+
+</Tip>
+
+Once you're in, spend a few minutes setting up your profile. This isn't just vanity - it helps others understand who you are and what you're working on.
+
+Add a short bio, links to projects, and skills/interests so collaborators can find you.
+
+<Tip>
+
+**Profile Pro Tips**: Add a profile picture (people remember faces!), write a short bio about your interests, and mention what you're learning or building. This helps others find you for collaborations.
+
+</Tip>
+
+## Dive Into Community Discussions
+
+Every model, dataset, and Space has a Community tab for focused discussions where you can:
+
+- Ask questions about how to use a model
+- Report bugs or unexpected behavior  
+- Share your results and improvements
+- Request new features or modifications
+
+Discussions are practical: ask for alternatives, report dataset issues, and share results.
+
+<Tip>
+
+Be specific in your questions, include code examples when relevant, and always say thanks when someone helps you out. The community thrives on mutual respect!
+
+</Tip>
+
+## Explore Spaces: AI in Action
+
+Spaces are interactive demos you can try in your browser. You'll find:
+
+- **Text generators** for writing, coding, and brainstorming.
+- **Image creators and editors** that turn your words into stunning visuals  
+- **Audio tools** for music, speech, and sound effects
+- **Educational demos** that teach AI concepts through hands-on play
+
+Browse through different categories to see what catches your eye. Each Space is a mini-tutorial on what's possible with AI.
+
+<Tip>
+
+Explore Spaces at [huggingface.co/spaces](https://huggingface.co/spaces). Examples:
+
+- [Web Scraper](https://huggingface.co/spaces/Agents-MCP-Hackathon/web-scraper) - a tool that can scrape websites and extract data  
+- [Qwen Edit](https://huggingface.co/spaces/Qwen/Qwen-Image-Edit) - a tool that can edit images with AI.
+- [Text to Speech Unlimited](https://huggingface.co/spaces/NihalGazi/Text-To-Speech-Unlimited) - a tool that can convert text to speech.
+
+You can find more live demos on the Spaces page.
+
+</Tip>
+
+## Join Organizations and Teams
+
+Organizations on Hugging Face group work by companies, universities, labs, and communities. They help teams coordinate and share.
+
+Here's what you'll find:
+- **Companies** like Microsoft and Google sharing their latest research
+- **Universities** publishing reproducible studies and student projects  
+- **Research labs** collaborating on breakthrough discoveries
+- **Indie groups** building cool projects together
+- **Enthusiast** interested in a specific topic or technology
+- **Events** for conferences, workshops, and meetups
+
+<Tip>
+
+Check if your company or school has an org. You can also join orgs for tools or libraries you use.
+
+</Tip>
+
+Organizations give you shared resources, team coordination tools, and access to collective expertise. Whether you're at a big tech company or a small startup, organizations help you work better together while contributing to the broader community.
+
+## From Explorer to Contributor
+
+One typical path:
+
+**🔍 Start Exploring** - Browse models, try out Spaces, download datasets. Get a feel for what's out there and what interests you.
+
+**💬 Join Conversations** - Ask questions in discussions, share your experiences, help others when you can. Every question helps someone else later.
+
+**🚀 Make Your Mark** - Once you're comfortable, start contributing:
+- Create a Space to demo a model you love
+- Share a dataset you've collected  
+- Write a tutorial about something you learned and post a blog post about it.
+
+The community grows stronger when everyone contributes, even in small ways. Your unique perspective and experiences are valuable, no matter your skill level.
+
+## Ways to Contribute (For Everyone!)
+
+Everyone can contribute meaningfully, regardless of experience level:
+
+**🔰 Beginners**
+- Test models with your own data and report what you find
+- Ask questions that help clarify confusing documentation  
+- Share your learning journey as community posts.
+
+**Experienced Users**
+- Create tutorials and educational blog posts.
+- Optimize models for better performance
+- Develop new tools and utilities
+- Mentor newcomers in discussions
+
+**Researchers**  
+- Publish models with comprehensive documentation
+- Share reproducible datasets
+- Collaborate on cutting-edge projects
+
+## Community Guidelines: Keep It Awesome
+
+The Hugging Face community thrives because everyone follows some simple principles that keep things friendly and productive.
+
+**🤝 Be Respectful and Inclusive**
+- Welcome newcomers and help them learn
+- Respect different backgrounds, experience levels, and perspectives  
+- Keep discussions constructive and professional
+
+**✅ Quality Over Quantity**
+- Provide helpful, detailed answers in discussions
+- Document your models and datasets clearly
+
+**🔒 Safety and Legal Stuff**
+- Respect privacy - don't share personal info unnecessarily
+- Follow licensing terms for models and datasets
+
+<Tip>
+
+**New to community guidelines?** Check out the official [Code of Conduct](https://huggingface.co/code-of-conduct) and [Content Guidelines](https://huggingface.co/content-guidelines) to understand the community values.
+
+</Tip>
+
+The community largely self-regulates through mutual respect and shared commitment to advancing AI for everyone.
+
+## Ready to Jump In?
+
+You're all set to join the Hugging Face community! Here's your action plan:
+
+**🚀 Right Now**
+1. Create your account at [huggingface.co/join](https://huggingface.co/join)
+2. Set up your profile with a photo and short bio
+3. Browse a few models or Spaces that interest you
+
+**📅 This Week**  
+1. Join the [Discord server](https://discord.com/invite/JfAtkvEtRb) and introduce yourself
+2. Ask a question in a model's Community tab
+3. Follow some interesting creators and organizations
+
+**🎯 This Month**
+1. Try building something with a model you discovered
+2. Share your experience in discussions  
+3. Make your first small contribution (even fixing a typo counts!)
+
+<Tip>
+
+**Feeling overwhelmed?** Start slow! Just create your account and browse around. The community is incredibly welcoming, and you can participate at your own pace. Every expert here started exactly where you are now.
+
+</Tip>
+
+The community is waiting to welcome you, learn from you, and build amazing things together. Your unique perspective matters, and your journey starts with a single click.
+
+**Welcome to the Hugging Face community! 🤗**
+
+---
+
+*Create your account: [huggingface.co/join](https://huggingface.co/join)* 

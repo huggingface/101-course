@@ -1,22 +1,76 @@
-# The Hugging Face Hub[[the-hugging-face-hub]]
+# The Hugging Face Hub
 
-<CourseFloatingBanner
-    chapter={1}
-    classNames="absolute z-10 right-0 top-0"
-/>
+Welcome to the Hugging Face Hub.
 
-The [Hugging Face Hub](https://huggingface.co/) –- our main website –- is a central platform that enables anyone to discover, use, and contribute new state-of-the-art models and datasets. It hosts a wide variety of models, with more than 10,000 publicly available. We'll focus on the models in this chapter, and take a look at the datasets in Chapter 5.
+The Hugging Face Hub is a collaborative platform for artificial intelligence development and deployment. It serves as a centralized repository where developers, researchers, and organizations share machine learning models, datasets, and applications.
 
-The models in the Hub are not limited to 🤗 Transformers or even NLP. There are models from [Flair](https://github.com/flairNLP/flair) and [AllenNLP](https://github.com/allenai/allennlp) for NLP, [Asteroid](https://github.com/asteroid-team/asteroid) and [pyannote](https://github.com/pyannote/pyannote-audio) for speech, and [timm](https://github.com/rwightman/pytorch-image-models) for vision, to name a few. 
+The platform functions as a version-controlled repository system for AI resources, similar to how GitHub works for code. It enables collaboration and sharing across the machine learning community.
 
-Each of these models is hosted as a Git repository, which allows versioning and reproducibility. Sharing a model on the Hub means opening it up to the community and making it accessible to anyone looking to easily use it, in turn eliminating their need to train a model on their own and simplifying sharing and usage. 
+<Tip>
 
-Additionally, sharing a model on the Hub automatically deploys a hosted Inference API for that model. Anyone in the community is free to test it out directly on the model's page, with custom inputs and appropriate widgets.
+It's not just for engineers! The Hub also includes demos, blog posts, and papers that you can read as you learn.
 
-The best part is that sharing and using any public model on the Hub is completely free! [Paid plans](https://huggingface.co/pricing) also exist if you wish to share models privately.
+</Tip>
 
-The video below shows how to navigate the Hub.
+## What Makes the Hugging Face Hub Special?
 
-<Youtube id="XvSGPZFEjDY"/>
+The Hub hosts over 500,000 machine learning models, more than 100,000 datasets, and over 300,000 interactive demonstrations called Spaces. These resources are contributed by developers and researchers worldwide.
 
-Having a huggingface.co account is required to follow along this part, as we'll be creating and managing repositories on the Hugging Face Hub: [create an account](https://huggingface.co/join)
+The platform emphasizes openness and documentation. Models, datasets, and applications include documentation that helps users understand how to use and build upon existing work. This collaborative approach allows developers to build on previous innovations.
+
+The platform uses Git-based version control, applying software development practices to machine learning. Changes to models are tracked, contributions are documented, and improvements can be shared with the community.
+
+<Tip>
+
+People share their work openly. Students collaborate with researchers; small teams use the same tools as large companies.
+
+</Tip>
+
+## The Three Pillars of AI Collaboration
+
+The Hub's architecture is built around three fundamental pillars that work together to create a complete AI ecosystem. Understanding these pillars is crucial for anyone looking to participate in this collaborative environment.
+
+**Models** form the first pillar. Models cover text, vision, audio, and multimodal tasks. Examples include text generation, image creation, translation, and code generation. For instance, see [`openai/gpt-oss-120b`](https://huggingface.co/openai/gpt-oss-120b).
+
+**Datasets** comprise the second pillar, providing training and evaluation data. There are also curated and archival datasets; for example, see [`nasa-impact`](https://huggingface.co/nasa-impact).
+
+These datasets include text collections for language models, image repositories for computer vision, audio datasets for speech processing, and multilingual collections. The quality and variety of these datasets affect the capabilities of models trained on them.
+
+**Spaces** are interactive applications that demonstrate models. They let you try models without setup and share applications. For example, you can edit images in [`Qwen/Qwen-Image-Edit`](https://huggingface.co/spaces/Qwen/Qwen-Image-Edit).
+
+## Advanced Integration Capabilities
+
+The Hub supports the Model Context Protocol (MCP) via the `huggingface_hub[mcp]` extra. This enables LLMs to call tools exposed by MCP servers, including MCP-enabled Spaces.
+
+For inference, you can route requests through different providers. Use `provider="auto"` (default) to pick the first available provider per your preferences, or select a specific provider in code.
+
+## Why the Hub Matters for Everyone
+
+Beginners can learn by trying models in the browser without installation. Documentation and community support help you get unstuck.
+
+Developers can integrate models with a few API calls and scale to production.
+
+Researchers can publish models and datasets with documentation and evaluation artifacts for reproducibility.
+
+## The Power of Open Source Innovation
+
+The Hub follows open-source principles, promoting transparency. Users can examine training processes and limitations, which supports responsible use.
+
+<Tip>
+
+The collaborative nature of open source development helps accelerate innovation. When researchers and developers can build upon each other's work, the rate of discovery and improvement increases.
+
+</Tip>
+
+## Getting Started on Your AI Journey
+
+Getting started with the Hugging Face Hub is straightforward:
+
+1. [Visit the Hugging Face Hub](https://huggingface.co)
+2. Try out models in the browser
+3. [Create a free account](https://huggingface.co/join)
+4. Participate in the community
+
+Many models include interactive widgets that allow you to test them immediately. These widgets provide a hands-on way to understand what different models can do, including generating text, creating images from descriptions, and translating between languages. This immediate feedback helps build understanding of AI capabilities and limitations.
+
+Creating a free account provides additional features, including the ability to save favorite models, participate in community discussions, and share your own creations. The account setup process is simple and provides access to the collaborative features.
