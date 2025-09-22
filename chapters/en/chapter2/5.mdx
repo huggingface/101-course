@@ -1,92 +1,459 @@
-# How to write a good issue[[how-to-write-a-good-issue]]
+# End to end AI Application with Inference Endpoints
 
-<CourseFloatingBanner chapter={2}
-  classNames="absolute z-10 right-0 top-0"
-  notebooks={[
-    {label: "Google Colab", value: "https://colab.research.google.com/github/huggingface/notebooks/blob/master/course/en/chapter8/section5.ipynb"},
-    {label: "Aws Studio", value: "https://studiolab.sagemaker.aws/import/github/huggingface/notebooks/blob/master/course/en/chapter8/section5.ipynb"},
-]} />
-
-When you encounter something that doesn't seem right with one of the Hugging Face libraries, you should definitely let us know so we can fix it (the same goes for any open source library, for that matter). If you are not completely certain whether the bug lies in your own code or one of our libraries, the first place to check is the [forums](https://discuss.huggingface.co/). The community will help you figure this out, and the Hugging Face team also closely watches the discussions there.
-
-<Youtube id="_PAli-V4wj0"/>
-
-When you are sure you have a bug in your hand, the first step is to build a minimal reproducible example.
-
-## Creating a minimal reproducible example[[creating-a-minimal-reproducible-example]]
-
-It's very important to isolate the piece of code that produces the bug, as no one in the Hugging Face team is a magician (yet), and they can't fix what they can't see. A minimal reproducible example should, as the name indicates, be reproducible. This means that it should not rely on any external files or data you may have. Try to replace the data you are using with some dummy values that look like your real ones and still produce the same error.
+This tutorial will guide you from end to end on how to deploy your own chat application using Hugging Face Inference Endpoints. We will use Gradio to create a chat interface and an OpenAI client to connect to the Inference Endpoint.
 
 <Tip>
 
-🚨 Many issues in the 🤗 Transformers repository are unsolved because the data used to reproduce them is not accessible.
+This Tutorial uses Python, but your client can be any language that can make HTTP requests. The model and engine you deploy on Inference Endpoints uses the **OpenAI Chat Completions format**, so you can use any [OpenAI client](https://platform.openai.com/docs/libraries) to connect to them, in languages like JavaScript, Java, and Go.
 
 </Tip>
 
-Once you have something that is self-contained, you can try to reduce it into even less lines of code, building what we call a _minimal reproducible example_. While this requires a bit more work on your side, you will almost be guaranteed to get help and a fix if you provide a nice, short bug reproducer.
+Prerequisites:
 
-If you feel comfortable enough, go inspect the source code where your bug happens. You might find a solution to your problem (in which case you can even suggest a pull request to fix it), but more generally, this can help the maintainers better understand the source when they read your report.
+- A running Inference Endpoint (created in the previous unit)
+- Your endpoint URL and an access token
 
-## Filling out the issue template[[filling-out-the-issue-template]]
+## Create your Inference Endpoint
 
-When you file your issue, you will notice there is a template to fill out. We will follow the one for [🤗 Transformers issues](https://github.com/huggingface/transformers/issues/new/choose) here, but the same kind of information will be required if you report an issue in another repository. Don't leave the template blank: taking the time to fill it in will maximize your chances of getting an answer and solving your problem.
+First, we need to create an Inference Endpoint for a model that can chat. 
 
-In general, when filing an issue, always stay courteous. This is an open source project, so you are using free software, and no one has any obligation to help you. You may include what you feel is justified criticism in your issue, but then the maintainers may very well take it badly and not be in a rush help you. Make sure you read the [code of conduct](https://github.com/huggingface/transformers/blob/master/CODE_OF_CONDUCT.md) of the project.
+Start by navigating to the Inference Endpoints UI, and once you have logged in you should see a button for creating a new Inference
+Endpoint. Click the "New" button.
 
-### Including your environment information[[including-your-environment-information]]
+![new-button](https://raw.githubusercontent.com/huggingface/hf-endpoints-documentation/main/assets/quick_start/1-new-button.png)
 
-🤗 Transformers provides a utility to get all the information we need about your environment. Just type the following in your terminal:
+From there you'll be directed to the catalog. The Model Catalog consists of popular models which have tuned configurations to work just as one-click
+deploys. You can filter by name, task, price of the hardware and much more.
 
-```
-transformers-cli env
-```
+![catalog](https://raw.githubusercontent.com/huggingface/hf-endpoints-documentation/main/assets/quick_start/2-catalog.png)
 
-and you should get something like this:
+In this example let's deploy the [Qwen/Qwen3-1.7B](https://huggingface.co/Qwen/Qwen3-1.7B) model. You can find
+it by searching for `qwen3 1.7b` in the search field and deploy it by clicking the card.
 
-```out
-Copy-and-paste the text below in your GitHub issue and FILL OUT the two last points.
+![qwen](https://raw.githubusercontent.com/huggingface/hf-endpoints-documentation/main/assets/tutorials/chatbot/qwen-search.png)
 
-- `transformers` version: 4.12.0.dev0
-- Platform: Linux-5.10.61-1-MANJARO-x86_64-with-arch-Manjaro-Linux
-- Python version: 3.7.9
-- PyTorch version (GPU?): 1.8.1+cu111 (True)
-- Tensorflow version (GPU?): 2.5.0 (True)
-- Flax version (CPU?/GPU?/TPU?): 0.3.4 (cpu)
-- Jax version: 0.2.13
-- JaxLib version: 0.1.65
-- Using GPU in script?: <fill in>
-- Using distributed or parallel set-up in script?: <fill in>
-```
+Next we'll choose which hardware and deployment settings we'll go for. Since this is a catalog model, all of the pre-selected options are very good
+defaults. So in this case we don't need to change anything. In case you want a deeper dive on what the different settings mean you can check out
+the [configuration guide](./guides/configuration).
 
-You can also add a `!` at the beginning of the `transformers-cli env` command to execute it from a notebook cell, and then copy and paste the result at the beginning of your issue.
+For this model the Nvidia L4 is the recommended choice. It will be perfect for our testing. Performant but still reasonably priced. Also note that by
+default the endpoint will scale down to zero, meaning it will become idle after 1h of inactivity.
 
-### Tagging people[[tagging-people]]
+Now all you need to do is click click "Create Endpoint" 🚀
 
-Tagging people by typing an `@` followed by their GitHub handle will send them a notification so they will see your issue and might reply quicker. Use this with moderation, because the people you tag might not appreciate being notified if it's something they have no direct link to. If you have looked at the source files related to your bug, you should tag the last person that made changes at the line you think is responsible for your problem (you can find this information by looking at said line on GitHub, selecting it, then clicking "View git blame").
+![config](https://raw.githubusercontent.com/huggingface/hf-endpoints-documentation/main/assets/tutorials/chatbot/config.png)
 
-Otherwise, the template offers suggestions of people to tag. In general, never tag more than three people!
+Now our Inference Endpoint is initializing, which usually takes about 3-5 minutes. If you want to can allow browser notifications which will give you a
+ping once the endpoint reaches a running state.
 
-### Including a reproducible example[[including-a-reproducible-example]]
+![init](https://raw.githubusercontent.com/huggingface/hf-endpoints-documentation/main/assets/tutorials/chatbot/init.png)
 
-If you have managed to create a self-contained example that produces the bug, now is the time to include it! Type a line with three backticks followed by `python`, like this:
+## Test your Inference Endpoint in the browser
 
-```
+Now that we've created our Inference Endpoint, we can test it in the playground section.
+
+![playground](https://raw.githubusercontent.com/huggingface/hf-endpoints-documentation/main/assets/tutorials/chatbot/playground.png)
+
+You can use the model through a chat interface or copy code snippets to use it in your own application. 
+
+## Get your Inference Endpoint details
+
+We need to grab details of our Inference Endpoint, which we can find in the Endpoint's [Overview](https://endpoints.huggingface.co/). We will need the following details:
+
+- The base URL of the endpoint plus the version of the OpenAI API (e.g. `https://<id>.<region>.<cloud>.endpoints.huggingface.cloud/v1/`)
+- The name of the endpoint to use (e.g. `qwen3-1-7b-xll`)
+- The token to use for authentication (e.g. `hf_<token>`)
+
+![endpoint-details](https://raw.githubusercontent.com/huggingface/hf-endpoints-documentation/main/assets/tutorials/chatbot/endpoint-page.png)
+
+We can find the token in your [account settings](https://huggingface.co/settings/tokens) which is accessible from the top dropdown and clicking on your account name.
+
+## Deploy in a few lines of code
+
+The easiest way to deploy a chat application with [Gradio](https://gradio.app/) is to use the convenient `load_chat` method. This abstracts everything away and you can have a working chat application quickly.
+
 ```python
+import os
+
+import gradio as gr
+
+gr.load_chat(
+    base_url="<endpoint-url>/v1/", # Replace with your endpoint URL + version
+    model="endpoint-name", # Replace with your endpoint name
+    token=os.getenv("HF_TOKEN"), # Replace with your token
+).launch()
 ```
 
-then paste in your minimal reproducible example and type a new line with three backticks. This will ensure your code is properly formatted.
+The `load_chat` method won't cater for your production needs, but it's a great way to get started and test your application. 
 
-If you didn't manage to create a reproducible example, explain in clear steps how you got to your issue. Include a link to a Google Colab notebook where you got the error if you can. The more information you share, the better able the maintainers will be to reply to you.
 
-In all cases, you should copy and paste the whole error message you are getting. If you're working in Colab, remember that some of the frames may be automatically collapsed in the stack trace, so make sure you expand them before copying. Like with the code sample, put that error message between two lines with three backticks, so it's properly formatted.
+## Build your own custom chat application
 
-### Describing the expected behavior[[describing-the-expected-behavior]]
+If you want more control over your chat application, you can build your own custom chat interface with Gradio. This gives you more flexibility to customize the behavior, add features, and handle errors.
 
-Explain in a few lines what you expected to get, so that the maintainers get a full grasp of the problem. This part is generally pretty obvious, so it should fit in one sentence, but in some cases you may have a lot to say.
+Choose your preferred method for connecting to Inference Endpoints:
 
-## And then what?[[and-then-what]]
+<hfoptions id="chat-implementation">
+<hfoption id="hf-client">
 
-Once your issue is filed, make sure to quickly check everything looks okay. You can edit the issue if you made a mistake, or even change its title if you realize the problem is different from what you initially thought.
+**Using Hugging Face InferenceClient**
 
-There is no point pinging people if you don't get an answer. If no one helps you in a few days, it's likely that no one could make sense of your problem. Don't hesitate to go back to the reproducible example. Can you make it shorter and more to the point? If you don't get an answer in a week, you can leave a message gently asking for help, especially if you've edited your issue to include more information on the problem.
+First, install the required dependencies:
 
+```bash
+pip install gradio huggingface-hub
+```
+
+The Hugging Face InferenceClient provides a clean interface that's compatible with the OpenAI API format:
+
+```python
+import os
+import gradio as gr
+from huggingface_hub import InferenceClient
+
+# Initialize the Hugging Face InferenceClient
+client = InferenceClient(
+    base_url="<endpoint-url>/v1/",  # Replace with your endpoint URL
+    token=os.getenv("HF_TOKEN")  # Use environment variable for security
+)
+
+def chat_with_hf_client(message, history):
+    # Convert Gradio history to messages format
+    messages = [{"role": msg["role"], "content": msg["content"]} for msg in history]
+    
+    # Add the current message
+    messages.append({"role": "user", "content": message})
+    
+    # Create chat completion
+    chat_completion = client.chat.completions.create(
+        model="endpoint-name",  # Use the name of your endpoint (i.e. qwen3-1.7b-instruct-xxxx)
+        messages=messages,
+        max_tokens=150,
+        temperature=0.7,
+    )
+    
+    # Return the response
+    return chat_completion.choices[0].message.content
+
+# Create the Gradio interface
+demo = gr.ChatInterface(
+    fn=chat_with_hf_client,
+    type="messages",
+    title="Custom Chat with Inference Endpoints",
+    examples=["What is deep learning?", "Explain neural networks", "How does AI work?"]
+)
+
+if __name__ == "__main__":
+    demo.launch()
+```
+
+</hfoption>
+<hfoption id="openai-client">
+
+**Using OpenAI Client**
+
+First, install the required dependencies:
+```bash
+pip install gradio openai
+```
+
+Here's a basic chat function using the OpenAI client:
+
+```python
+import os
+import gradio as gr
+from openai import OpenAI
+
+# Initialize the OpenAI client with your Inference Endpoint
+client = OpenAI(
+    base_url="<endpoint-url>/v1/",  # Replace with your endpoint URL
+    api_key=os.getenv("HF_TOKEN")  # Use environment variable for security
+)
+
+def chat_with_openai(message, history):
+
+    # Convert Gradio history to OpenAI format
+    messages = [{"role": msg["role"], "content": msg["content"]} for msg in history]
+    
+    # Add the current message
+    messages.append({"role": "user", "content": message})
+    
+    # Create chat completion
+    chat_completion = client.chat.completions.create(
+        model="endpoint-name",  # Use the name of your endpoint (i.e. qwen3-1.7b-xxxx)
+        messages=messages,
+        max_tokens=150,
+        temperature=0.7,
+    )
+    
+    # return the response
+    return chat_completion.choices[0].message.content
+                
+
+# Create the Gradio interface
+demo = gr.ChatInterface(
+    fn=chat_with_openai,
+    type="messages",
+    title="Custom Chat with Inference Endpoints",
+    examples=["What is deep learning?", "Explain neural networks", "How does AI work?"]
+)
+
+if __name__ == "__main__":
+    demo.launch()
+```
+
+</hfoption>
+<hfoption id="requests">
+
+**Using Requests Library**
+
+First, install the required dependencies:
+```bash
+pip install gradio requests
+```
+
+Here's a basic chat function using the requests library with the Messages API:
+
+```python
+import os
+import gradio as gr
+import requests
+
+# Configure your Inference Endpoint
+API_URL = "<endpoint-url>/v1/chat/completions"  # Use the chat completions endpoint
+
+headers = {
+    "Accept": "application/json",
+    "Content-Type": "application/json",
+    "Authorization": f"Bearer {os.getenv('HF_TOKEN')}"  # Use environment variable for security
+}
+
+def chat_with_requests(message, history):
+    # Convert Gradio history to messages format
+    messages = [{"role": msg["role"], "content": msg["content"]} for msg in history]
+    
+    # Add the current message
+    messages.append({"role": "user", "content": message})
+    
+    # Prepare the payload using the Messages API format
+    payload = {
+        "model": "endpoint-name",  # Use the name of your endpoint (i.e. qwen3-1.7b-xxxx)
+        "messages": messages,
+        "max_tokens": 150,
+        "temperature": 0.7,
+        "stream": False
+    }
+    
+    # Make the request
+    response = requests.post(API_URL, headers=headers, json=payload)
+    response.raise_for_status()
+    
+    # Parse the response
+    result = response.json()
+    return result["choices"][0]["message"]["content"]
+
+# Create the Gradio interface
+demo = gr.ChatInterface(
+    fn=chat_with_requests,
+    type="messages",
+    title="Custom Chat with Inference Endpoints",
+    examples=["What is deep learning?", "Explain neural networks", "How does AI work?"]
+)
+
+if __name__ == "__main__":
+    demo.launch()
+```
+
+</hfoption>
+</hfoptions>
+
+
+
+## Adding Streaming Support
+
+For a better user experience, you can implement streaming responses. This will require us to handle the messages and `yield` them to the client.
+
+Here's how to add streaming to each client:
+
+<hfoptions id="streaming-implementation">
+<hfoption id="hf-client">
+
+### Hugging Face InferenceClient Streaming
+
+The Hugging Face InferenceClient supports streaming similar to the OpenAI client:
+
+```python
+import os
+import gradio as gr
+from huggingface_hub import InferenceClient
+
+client = InferenceClient(
+    base_url="<endpoint-url>/v1/",
+    token=os.getenv("HF_TOKEN")
+)
+
+def chat_with_hf_streaming(message, history):
+    # Convert history to messages format
+    messages = [{"role": msg["role"], "content": msg["content"]} for msg in history]
+    messages.append({"role": "user", "content": message})
+    
+    # Create streaming chat completion
+    chat_completion = client.chat.completions.create(
+        model="endpoint-name",
+        messages=messages,
+        max_tokens=150,
+        temperature=0.7,
+        stream=True  # Enable streaming
+    )
+    
+    response = ""
+    for chunk in chat_completion:
+        if chunk.choices[0].delta.content:
+            response += chunk.choices[0].delta.content
+            yield response  # Yield partial response for streaming
+
+# Create streaming interface
+demo = gr.ChatInterface(
+    fn=chat_with_hf_streaming,
+    type="messages",
+    title="Streaming Chat with Inference Endpoints"
+)
+
+demo.launch()
+```
+
+</hfoption>
+<hfoption id="openai-client">
+
+### OpenAI Client Streaming
+
+To use streaming with the OpenAI client, we need to set `stream=True` and yield the response as it builds:
+
+```python
+import os
+import gradio as gr
+from openai import OpenAI
+
+client = OpenAI(base_url="<endpoint-url>/v1/", api_key=os.getenv("HF_TOKEN"))
+
+
+def chat_with_streaming(message, history):
+    # Convert history to OpenAI format
+    messages = [{"role": msg["role"], "content": msg["content"]} for msg in history]
+    messages.append({"role": "user", "content": message})
+
+
+chat_completion = client.chat.completions.create(
+    model="endpoint-name", # Use the name of your endpoint (i.e. qwen3-1.7b-xxxx)
+    messages=messages,
+    max_tokens=150,
+    temperature=0.7,
+    stream=True,  # Enable streaming
+)
+
+response = ""
+for chunk in chat_completion:
+    if chunk.choices[0].delta.content:
+        response += chunk.choices[0].delta.content
+        yield response  # Yield partial response for streaming
+
+
+# Create streaming interface
+demo = gr.ChatInterface(
+    fn=chat_with_streaming,
+    type="messages",
+    title="Streaming Chat with Inference Endpoints",
+)
+
+demo.launch()
+
+```
+
+</hfoption>
+<hfoption id="requests">
+
+### Requests Library Streaming
+
+For requests, you can use the streaming approach with the Messages API by setting `stream=True`:
+
+```python
+import os
+import gradio as gr
+import requests
+import json
+
+API_URL = "https://<id>.<region>.<cloud>.endpoints.huggingface.cloud/v1/chat/completions"
+
+headers = {
+    "Accept": "application/json",
+    "Content-Type": "application/json",
+    "Authorization": f"Bearer {os.getenv('HF_TOKEN')}",
+}
+
+
+def chat_with_requests_streaming(message, history):
+    # Convert Gradio history to messages format
+    messages = [{"role": msg["role"], "content": msg["content"]} for msg in history]
+    messages.append({"role": "user", "content": message})
+
+    # Prepare payload using Messages API format
+    payload = {
+        "model": "smollm2-1-7b-instruct-ljn",
+        "messages": messages,
+        "max_tokens": 150,
+        "temperature": 0.7,
+        "stream": True,  # Enable streaming
+    }
+
+    response = requests.post(API_URL, headers=headers, json=payload, stream=True)
+
+    content = ""
+
+    for line in response.iter_lines():
+        line = line.decode("utf-8")
+
+        if line.startswith("data: ") and not line.endswith("[DONE]"):
+            data = json.loads(line[len("data: ") :])
+            chunk = data["choices"][0]["delta"].get("content", "")
+            content += chunk
+            yield content
+
+
+# Create streaming interface
+demo = gr.ChatInterface(
+    fn=chat_with_requests_streaming,
+    type="messages",
+    title="Streaming Chat with Inference Endpoints",
+)
+
+demo.launch()
+
+```
+
+</hfoption>
+
+</hfoptions>
+
+## Deploy your chat application
+
+Our app will run on port 7860 and look like this:
+
+![Gradio app](https://raw.githubusercontent.com/huggingface/hf-endpoints-documentation/main/assets/tutorials/chatbot/app.png)
+
+To deploy, we'll need to create a new Space and upload our files.
+
+1. **Create a new Space**: Go to [huggingface.co/new-space](https://huggingface.co/new-space)
+2. **Choose Gradio SDK** and make it public
+3. **Upload your files**: Upload `app.py`
+4. **Add your token**: In Space settings, add `HF_TOKEN` as a secret (get it from [your settings](https://huggingface.co/settings/tokens))
+5. **Launch**: Your app will be live at `https://huggingface.co/spaces/your-username/your-space-name`
+
+> **Note**: While we used CLI authentication locally, Spaces requires the token as a secret for the deployment environment.
+
+When you're comfortable with your app, continue to the summary and quiz.
+
+## Next steps
+
+That's it! You now have a chat application running on Hugging Face Spaces powered by Inference Endpoints.
+
+Why not level up and try out the [next guide](./tutorials/transcription) to build a Text-to-Speech application?

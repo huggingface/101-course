@@ -1,17 +1,52 @@
-# Introduction[[introduction]]
+<!-- DISABLE-FRONTMATTER-SECTIONS -->
 
-<CourseFloatingBanner
-    chapter={2}
-    classNames="absolute z-10 right-0 top-0"
-/>
+# Introduction
 
-Now that you know how to tackle the most common NLP tasks with 🤗 Transformers, you should be able to get started on your own projects! In this chapter we will explore what to do when you hit a problem. You'll learn how to successfully debug your code or your training, and how to ask the community for help if you don't manage to solve the problem by yourself. And if you think you've found a bug in one of the Hugging Face libraries, we'll show you the best way to report it so that the issue is resolved as quickly as possible.
+Welcome to Chapter 2: AI Inference on Hugging Face. In this part of the course, you'll learn two production-focused ways to run models:
 
-More precisely, in this chapter you will learn:
+- Inference Providers: zero-setup, multi-provider APIs to run models immediately.
+- Inference Endpoints: your own fully managed, scalable endpoint for a specific model.
 
-- The first thing to do when you get an error
-- How to ask for help on the [forums](https://discuss.huggingface.co/)
-- How to debug your training pipeline
-- How to write a good issue
+By the end of this chapter, you'll be able to pick the right option, call models from code, and ship a small app end to end.
 
-None of this is specifically related to 🤗 Transformers or the Hugging Face ecosystem, of course; the lessons from this chapter are applicable to most open source projects!
+## What you'll learn
+
+- Understand the difference between Inference Providers and Inference Endpoints
+- Call text, image, and audio models via simple APIs
+- Stream responses and handle errors
+- Deploy a dedicated endpoint and call it from your app
+
+## Prerequisites
+
+- A Hugging Face account and Access Token
+- Python 3.9+ (for code examples)
+- `pip install huggingface_hub`
+
+<Tip>
+
+Generate a token from your settings and set it as an environment variable before running examples:
+
+macOS/Linux:
+```bash
+export HF_TOKEN=hf_xxx
+```
+
+Windows PowerShell:
+```powershell
+$env:HF_TOKEN = "hf_xxx"
+```
+
+</Tip>
+
+## Providers vs Endpoints: when to use which?
+
+- Use Inference Providers when you want the fastest path to results across many models, with automatic routing and a simple API.
+- Use Inference Endpoints when you need a dedicated, configurable, production-ready API for one model, with strict performance, security, or compliance requirements.
+
+We'll start with Inference Providers, then move to Inference Endpoints.
+
+1. We'll learn about Inference Providers to get instant results with minimal setup. You'll build a small app using Providers.
+2. Then we'll learn Inference Endpoints for dedicated, production-ready deployments. You'll apply what you've learned to build a small app using an Endpoint.
+3. Finally, you'll review and take a short quiz.
+
+

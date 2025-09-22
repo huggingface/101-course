@@ -1,164 +1,589 @@
-# Asking for help on the forums[[asking-for-help-on-the-forums]]
+# Building Your First AI App with Inference Providers
 
-<CourseFloatingBanner chapter={2}
-  classNames="absolute z-10 right-0 top-0"
-  notebooks={[
-    {label: "Google Colab", value: "https://colab.research.google.com/github/huggingface/notebooks/blob/master/course/en/chapter8/section3.ipynb"},
-    {label: "Aws Studio", value: "https://studiolab.sagemaker.aws/import/github/huggingface/notebooks/blob/master/course/en/chapter8/section3.ipynb"},
-]} />
+You've learned the basics and understand the provider ecosystem. Now let's build something practical: an **AI Meeting Notes** app that transcribes audio files and generates summaries with action items.
 
-<Youtube id="S2EEG3JIt2A"/>
+This project demonstrates real-world AI orchestration using multiple specialized providers within a single application.
 
-The [Hugging Face forums](https://discuss.huggingface.co) are a great place to get help from the open source team and wider Hugging Face community. Here's what the main page looks like on any given day:
+## Project Overview
 
-<div class="flex justify-center">
-<img src="https://huggingface.co/datasets/huggingface-course/documentation-images/resolve/main/en/chapter8/forums.png" alt="The Hugging Face forums." width="100%"/>
-</div>
+Our app will:
+1. **Accept audio** as a microphone input through a web interface
+2. **Transcribe speech** using a fast speech-to-text model
+3. **Generate summaries** using a powerful language model
+4. **Deploy to the web** for easy sharing
 
-On the lefthand side you can see all the categories that the various topics are grouped into, while the righthand side shows the most recent topics. A topic is a post that contains a title, category, and description; it's quite similar to the GitHub issues format that we saw when creating our own dataset in [Chapter 5](/course/chapter5). As the name suggests, the [Beginners](https://discuss.huggingface.co/c/beginners/5) category is primarily intended for people just starting out with the Hugging Face libraries and ecosystem. Any question on any of the libraries is welcome there, be it to debug some code or to ask for help about how to do something. (That said, if your question concerns one library in particular, you should probably head to the corresponding library category on the forum.)
+<hfoptions id="tech-stack">
+<hfoption id="python">
 
-Similarly, the [Intermediate](https://discuss.huggingface.co/c/intermediate/6) and [Research](https://discuss.huggingface.co/c/research/7) categories are for more advanced questions, for example about the libraries or some cool new NLP research that you'd like to discuss.
+**Tech Stack**: Gradio (for the UI) + Inference Providers (for the AI)
 
-And naturally, we should also mention the [Course](https://discuss.huggingface.co/c/course/20) category, where you can ask any questions you have that are related to the Hugging Face course!
+</hfoption>
+<hfoption id="javascript">
 
-Once you have selected a category, you'll be ready to write your first topic. You can find some [guidelines](https://discuss.huggingface.co/t/how-to-request-support/3128) in the forum on how to do this, and in this section we'll take a look at some features that make up a good topic.
+**Tech Stack**: HTML/JavaScript (for the UI) + Inference Providers (for the AI)
 
-## Writing a good forum post[[writing-a-good-forum-post]]
+We'll use HTML and JavaScript for the UI just to keep things simple and agnostic, but if you want to see more mature examples, you can check out the [Hugging Face JS spaces](https://huggingface.co/huggingfacejs/spaces) page.
 
-As a running example, let's suppose that we're trying to generate embeddings from Wikipedia articles to create a custom search engine. As usual, we load the tokenizer and model as follows:
+</hfoption>
+</hfoptions>
+
+## Step 1: Set Up Authentication
+
+<hfoptions id="auth">
+<hfoption id="python">
+
+Before we start coding, authenticate with Hugging Face using the CLI:
+
+```bash
+pip install huggingface_hub
+hf auth login
+```
+
+When prompted, paste your Hugging Face token. This handles authentication automatically for all your inference calls. You can generate one from [your settings page](https://huggingface.co/settings/tokens/new?ownUserPermissions=inference.serverless.write&tokenType=fineGrained).
+
+</hfoption>
+<hfoption id="javascript">
+
+You'll need your Hugging Face token. Get one from [your settings page](https://huggingface.co/settings/tokens/new?ownUserPermissions=inference.serverless.write&tokenType=fineGrained). We can set it as an environment variable in our app.
+
+```bash
+export HF_TOKEN="your_token_here"
+```
+
+```javascript
+// Add your token at the top of your script
+const HF_TOKEN = process.env.HF_TOKEN;
+```
+
+<Tip warning={true}>
+
+When we deploy our app to Hugging Face Spaces, we'll need to add our token as a secret. This is a secure way to handle the token and avoid exposing it in the code.
+
+</Tip>
+
+</hfoption>
+</hfoptions>
+
+## Step 2: Build the User Interface
+
+<hfoptions id="ui">
+<hfoption id="python">
+
+Now let's create a simple web interface using Gradio:
 
 ```python
-from transformers import AutoTokenizer, AutoModel
+import gradio as gr
+from huggingface_hub import InferenceClient
 
-model_checkpoint = "distilbert-base-uncased"
-tokenizer = AutoTokenizer.from_pretrained(model_checkpoint)
-model = AutoModel.from_pretrained(model_checkpoint)
+def process_meeting_audio(audio_file):
+    """Process uploaded audio file and return transcript + summary"""
+    if audio_file is None:
+        return "Please upload an audio file.", ""
+    
+    # We'll implement the AI logic next
+    return "Transcript will appear here...", "Summary will appear here..."
+
+# Create the Gradio interface
+app = gr.Interface(
+    fn=process_meeting_audio,
+    inputs=gr.Audio(label="Upload Meeting Audio", type="filepath"),
+    outputs=[
+        gr.Textbox(label="Transcript", lines=10),
+        gr.Textbox(label="Summary & Action Items", lines=8)
+    ],
+    title="🎤 AI Meeting Notes",
+    description="Upload an audio file to get an instant transcript and summary with action items."
+)
+
+if __name__ == "__main__":
+    app.launch()
 ```
 
-Now suppose we try to embed a whole section of the [Wikipedia article](https://en.wikipedia.org/wiki/Transformers) on Transformers (the franchise, not the library!):
+Here we're using Gradio's `gr.Audio` component to either upload an audio file or use the microphone input. We're keeping things simple with two outputs: a transcript and a summary with action items.
+
+</hfoption>
+<hfoption id="javascript">
+
+For JavaScript, we'll create a clean HTML interface with native file upload and a simple loading state:
+
+```html
+<body>
+    <h1>🎤 AI Meeting Notes</h1>
+    
+    <div class="upload" onclick="document.getElementById('file').click()">
+        <input type="file" id="file" accept="audio/*">
+        <p>Upload audio file</p>
+        <button type="button">Choose File</button>
+    </div>
+    
+    <div class="loading" id="loading">Processing...</div>
+    
+    <div class="results" id="results">
+        <div class="result">
+            <h3>📝 Transcript</h3>
+            <div id="transcript"></div>
+        </div>
+        <div class="result">
+            <h3>📋 Summary</h3>
+            <div id="summary"></div>
+        </div>
+    </div>
+</body>
+```
+
+This creates a clean drag-and-drop interface with styled results sections for the transcript and summary.
+
+Our application can then use the `InferenceClient` from `huggingface.js` to call the transcription and summarization functions.
+
+```javascript
+import { InferenceClient } from 'https://esm.sh/@huggingface/inference';
+
+// Access the token from Hugging Face Spaces secrets
+const HF_TOKEN = window.huggingface?.variables?.HF_TOKEN;
+// Or if you're running locally, you can set it as an environment variable
+// const HF_TOKEN = process.env.HF_TOKEN;
+
+document.getElementById('file').onchange = async (e) => {
+    if (!e.target.files[0]) return;
+    
+    const file = e.target.files[0];
+    
+    show(document.getElementById('loading'));
+    hide(document.getElementById('results'), document.getElementById('error'));
+    
+    try {
+        const transcript = await transcribe(file);
+        const summary = await summarize(transcript);
+
+        document.getElementById('transcript').textContent = transcript;
+        document.getElementById('summary').textContent = summary;
+        
+        hide(document.getElementById('loading'));
+        show(document.getElementById('results'));
+    } catch (error) {
+        hide(document.getElementById('loading'));
+        showError(`Error: ${error.message}`);
+    }
+};
+```
+
+We'll also need to implement the `transcribe` and `summarize` functions.
+
+</hfoption>
+</hfoptions>
+
+## Step 3: Add Speech Transcription
+
+<hfoptions id="transcription">
+<hfoption id="python">
+
+Now let's implement the transcription using OpenAI's `whisper-large-v3` model for fast, reliable speech processing.
+
+<Tip>
+
+We'll use the `auto` provider to automatically select the first available provider for the model. You can define your own priority list of providers in the [Inference Providers](https://huggingface.co/settings/inference-providers) page.
+
+</Tip>
 
 ```python
-text = """
-Generation One is a retroactive term for the Transformers characters that
-appeared between 1984 and 1993. The Transformers began with the 1980s Japanese
-toy lines Micro Change and Diaclone. They presented robots able to transform
-into everyday vehicles, electronic items or weapons. Hasbro bought the Micro
-Change and Diaclone toys, and partnered with Takara. Marvel Comics was hired by
-Hasbro to create the backstory; editor-in-chief Jim Shooter wrote an overall
-story, and gave the task of creating the characthers to writer Dennis O'Neil.
-Unhappy with O'Neil's work (although O'Neil created the name "Optimus Prime"),
-Shooter chose Bob Budiansky to create the characters.
-
-The Transformers mecha were largely designed by Shōji Kawamori, the creator of
-the Japanese mecha anime franchise Macross (which was adapted into the Robotech
-franchise in North America). Kawamori came up with the idea of transforming
-mechs while working on the Diaclone and Macross franchises in the early 1980s
-(such as the VF-1 Valkyrie in Macross and Robotech), with his Diaclone mechs
-later providing the basis for Transformers.
-
-The primary concept of Generation One is that the heroic Optimus Prime, the
-villainous Megatron, and their finest soldiers crash land on pre-historic Earth
-in the Ark and the Nemesis before awakening in 1985, Cybertron hurtling through
-the Neutral zone as an effect of the war. The Marvel comic was originally part
-of the main Marvel Universe, with appearances from Spider-Man and Nick Fury,
-plus some cameos, as well as a visit to the Savage Land.
-
-The Transformers TV series began around the same time. Produced by Sunbow
-Productions and Marvel Productions, later Hasbro Productions, from the start it
-contradicted Budiansky's backstories. The TV series shows the Autobots looking
-for new energy sources, and crash landing as the Decepticons attack. Marvel
-interpreted the Autobots as destroying a rogue asteroid approaching Cybertron.
-Shockwave is loyal to Megatron in the TV series, keeping Cybertron in a
-stalemate during his absence, but in the comic book he attempts to take command
-of the Decepticons. The TV series would also differ wildly from the origins
-Budiansky had created for the Dinobots, the Decepticon turned Autobot Jetfire
-(known as Skyfire on TV), the Constructicons (who combine to form
-Devastator),[19][20] and Omega Supreme. The Marvel comic establishes early on
-that Prime wields the Creation Matrix, which gives life to machines. In the
-second season, the two-part episode The Key to Vector Sigma introduced the
-ancient Vector Sigma computer, which served the same original purpose as the
-Creation Matrix (giving life to Transformers), and its guardian Alpha Trion.
-"""
-
-inputs = tokenizer(text, return_tensors="pt")
-logits = model(**inputs).logits
+def transcribe_audio(audio_file_path):
+    """Transcribe audio using fal.ai for speed"""
+    client = InferenceClient(provider="auto")
+    
+    # Pass the file path directly - the client handles file reading
+    transcript = client.automatic_speech_recognition(
+        audio=audio_file_path,
+        model="openai/whisper-large-v3"
+    )
+    
+    return transcript.text
 ```
 
-```python output
-IndexError: index out of range in self
+
+</hfoption>
+<hfoption id="javascript">
+
+Now let's implement the transcription using OpenAI's `whisper-large-v3` model for fast, reliable speech processing.
+
+<Tip>
+
+We'll use the `auto` provider to automatically select the first available provider for the model. You can define your own priority list of providers in the [Inference Providers](https://huggingface.co/settings/inference-providers) page.
+
+</Tip>
+
+```javascript
+import { InferenceClient } from 'https://esm.sh/@huggingface/inference';
+
+async function transcribe(file) {
+    const client = new InferenceClient(HF_TOKEN);
+
+    const output = await client.automaticSpeechRecognition({
+        data: file,
+        model: "openai/whisper-large-v3-turbo",
+        provider: "auto"
+    });
+    
+    return output.text || output || 'Transcription completed';
+}
 ```
 
-Uh-oh, we've hit a problem -- and the error message is far more cryptic than the ones we saw in [section 2](/course/chapter8/section2)! We can't make head or tails of the full traceback, so we decide to turn to the Hugging Face forums for help. How might we craft the topic?
 
-To get started, we need to click the "New Topic" button at the upper-right corner (note that to create a topic, we'll need to be logged in):
+</hfoption>
+</hfoptions>
 
-<div class="flex justify-center">
-<img src="https://huggingface.co/datasets/huggingface-course/documentation-images/resolve/main/en/chapter8/forums-new-topic.png" alt="Creating a new forum topic." width="100%"/>
-</div>
+## Step 4: Add AI Summarization
 
-This brings up a writing interface where we can input the title of our topic, select a category, and draft the content:
+<hfoptions id="summarization">
+<hfoption id="python">
 
-<div class="flex justify-center">
-<img src="https://huggingface.co/datasets/huggingface-course/documentation-images/resolve/main/en/chapter8/forum-topic01.png" alt="The interface for creating a forum topic." width="100%"/>
-</div>
+Next, we'll use a powerful language model like `deepseek-ai/DeepSeek-R1-0528` from DeepSeek via an Inference Provider, and just like in the previous step, we'll use the `auto` provider to automatically select the first available provider for the model.
+We will define a custom prompt to ensure the output is formatted as a summary with action items and decisions made:
 
-Since the error seems to be exclusively about 🤗 Transformers, we'll select this for the category. Our first attempt at explaining the problem might look something like this:
+```python
+def generate_summary(transcript):
+    """Generate summary using an Inference Provider"""
+    client = InferenceClient(provider="auto")
+    
+    prompt = f"""
+    Analyze this meeting transcript and provide:
+    1. A concise summary of key points
+    2. Action items with responsible parties
+    3. Important decisions made
+    
+    Transcript: {transcript}
+    
+    Format with clear sections:
+    ## Summary
+    ## Action Items  
+    ## Decisions Made
+    """
+    
+    response = client.chat.completions.create(
+        model="deepseek-ai/DeepSeek-R1-0528",
+        messages=[{"role": "user", "content": prompt}],
+        max_tokens=1000
+    )
+    
+    return response.choices[0].message.content
+```
 
-<div class="flex justify-center">
-<img src="https://huggingface.co/datasets/huggingface-course/documentation-images/resolve/main/en/chapter8/forum-topic02.png" alt="Drafting the content for a new forum topic." width="100%"/>
-</div>
 
-Although this topic contains the error message we need help with, there are a few problems with the way it is written:
+</hfoption>
+<hfoption id="javascript">
 
-1. The title is not very descriptive, so anyone browsing the forum won't be able to tell what the topic is about without reading the body as well.
-2. The body doesn't provide enough information about _where_ the error is coming from and _how_ to reproduce it.
-3. The topic tags a few people directly with a somewhat demanding tone.
+Next, we'll use a powerful language model like `deepseek-ai/DeepSeek-R1-0528` from DeepSeek via an Inference Provider, and just like in the previous step, we'll use the `auto` provider to automatically select the first available provider for the model.
+We will define a custom prompt to ensure the output is formatted as a summary with action items and decisions made:
 
-Topics like this one are not likely to get a fast answer (if they get one at all), so let's look at how we can improve it. We'll start with the first issue of picking a good title.
+```javascript
+async function summarize(transcript) {
+    const client = new InferenceClient(HF_TOKEN);
 
-### Choosing a descriptive title[[choosing-a-descriptive-title]]
+    const prompt = `Analyze this meeting transcript and provide:
+    1. A concise summary of key points
+    2. Action items with responsible parties
+    3. Important decisions made
 
-If you're trying to get help with a bug in your code, a good rule of thumb is to include enough information in the title so that others can quickly determine whether they think they can answer your question or not. In our running example, we know the name of the exception that's being raised and have some hints that it's triggered in the forward pass of the model, where we call `model(**inputs)`. To communicate this, one possible title could be:
+    Transcript: ${transcript}
 
-> Source of IndexError in the AutoModel forward pass?
+    Format with clear sections:
+    ## Summary
+    ## Action Items  
+    ## Decisions Made`;
 
-This title tells the reader _where_ you think the bug is coming from, and if they've encountered an `IndexError` before, there's a good chance they'll know how to debug it. Of course, the title can be anything you want, and other variations like:
+    const response = await client.chatCompletion({
+        model: "deepseek-ai/DeepSeek-R1-0528",
+        messages: [
+            {
+                role: "user", 
+                content: prompt
+            }
+        ],
+        max_tokens: 1000
+    }, {
+        provider: "auto"
+    });
+    
+    return response.choices?.[0]?.message?.content || response || 'No summary available';
+}
+```
 
-> Why does my model produce an IndexError?
 
-could also be fine. Now that we've got a descriptive title, let's take a look at improving the body.
+</hfoption>
+</hfoptions>
 
-### Formatting your code snippets[[formatting-your-code-snippets]]
+## Step 5: Deploy on Hugging Face Spaces
 
-Reading source code is hard enough in an IDE, but it's even harder when the code is copied and pasted as plain text! Fortunately, the Hugging Face forums support the use of Markdown, so you should always enclose your code blocks with three backticks (```) so it's more easily readable. Let's do this to prettify the error message -- and while we're at it, let's make the body a bit more polite than our original version:
+<hfoptions id="deployment">
+<hfoption id="python">
 
-<div class="flex justify-center">
-<img src="https://huggingface.co/datasets/huggingface-course/documentation-images/resolve/main/en/chapter8/forum-topic03.png" alt="Our revised forum topic, with proper code formatting." width="100%"/>
-</div>
+To deploy, we'll need to create an `app.py` file and upload it to Hugging Face Spaces.
 
-As you can see in the screenshot, enclosing the code blocks in backticks converts the raw text into formatted code, complete with color styling! Also note that single backticks can be used to format inline variables, like we've done for `distilbert-base-uncased`. This topic is looking much better, and with a bit of luck we might find someone in the community who can guess what the error is about. However, instead of relying on luck, let's make life easier by including the traceback in its full gory detail!
+<details>
+<summary><strong>📋 Click to view the complete app.py file</strong></summary>
 
-### Including the full traceback[[including-the-full-traceback]]
+```python
+import gradio as gr
+from huggingface_hub import InferenceClient
 
-Since the last line of the traceback is often enough to debug your own code, it can be tempting to just provide that in your topic to "save space." Although well intentioned, this actually makes it _harder_ for others to debug the problem since the information that's higher up in the traceback can be really useful too. So, a good practice is to copy and paste the _whole_ traceback, while making sure that it's nicely formatted. Since these tracebacks can get rather long, some people prefer to show them after they've explained the source code. Let's do this. Now, our forum topic looks like the following:
 
-<div class="flex justify-center">
-<img src="https://huggingface.co/datasets/huggingface-course/documentation-images/resolve/main/en/chapter8/forum-topic04.png" alt="Our example forum topic, with the complete traceback." width="100%"/>
-</div>
+def transcribe_audio(audio_file_path):
+    """Transcribe audio using an Inference Provider"""
+    client = InferenceClient(provider="auto")
 
-This is much more informative, and a careful reader might be able to point out that the problem seems to be due to passing a long input because of this line in the traceback:
+    # Pass the file path directly - the client handles file reading
+    transcript = client.automatic_speech_recognition(
+        audio=audio_file_path, model="openai/whisper-large-v3"
+    )
 
-> Token indices sequence length is longer than the specified maximum sequence length for this model (583 > 512).
+    return transcript.text
 
-However, we can make things even easier for them by providing the actual code that triggered the error. Let's do that now.
 
-### Providing a reproducible example[[providing-a-reproducible-example]]
+def generate_summary(transcript):
+    """Generate summary using an Inference Provider"""
+    client = InferenceClient(provider="auto")
 
-If you've ever tried to debug someone else's code, you've probably first tried to recreate the problem they've reported so you can start working your way through the traceback to pinpoint the error. It's no different when it comes to getting (or giving) assistance on the forums, so it really helps if you can provide a small example that reproduces the error. Half the time, simply walking through this exercise will help you figure out what's going wrong. In any case, the missing piece of our example is to show the _inputs_ that we provided to the model. Doing that gives us something like the following completed example:
+    prompt = f"""
+    Analyze this meeting transcript and provide:
+    1. A concise summary of key points
+    2. Action items with responsible parties
+    3. Important decisions made
+    
+    Transcript: {transcript}
+    
+    Format with clear sections:
+    ## Summary
+    ## Action Items  
+    ## Decisions Made
+    """
 
-<div class="flex justify-center">
-<img src="https://huggingface.co/datasets/huggingface-course/documentation-images/resolve/main/en/chapter8/forum-topic05.png" alt="The final version of our forum topic." width="100%"/>
-</div>
+    response = client.chat.completions.create(
+        model="deepseek-ai/DeepSeek-R1-0528",
+        messages=[{"role": "user", "content": prompt}],
+        max_tokens=1000,
+    )
 
-This topic now contains quite a lot of information, and it's written in a way that is much more likely to attract the attention of the community and get a helpful answer. With these basic guidelines, you can now create great topics to find the answers to your 🤗 Transformers questions!
+    return response.choices[0].message.content
 
+
+def process_meeting_audio(audio_file):
+    """Main processing function"""
+    if audio_file is None:
+        return "Please upload an audio file.", ""
+
+    try:
+        # Step 1: Transcribe
+        transcript = transcribe_audio(audio_file)
+
+        # Step 2: Summarize
+        summary = generate_summary(transcript)
+
+        return transcript, summary
+
+    except Exception as e:
+        return f"Error processing audio: {str(e)}", ""
+
+
+# Create Gradio interface
+app = gr.Interface(
+    fn=process_meeting_audio,
+    inputs=gr.Audio(label="Upload Meeting Audio", type="filepath"),
+    outputs=[
+        gr.Textbox(label="Transcript", lines=10),
+        gr.Textbox(label="Summary & Action Items", lines=8),
+    ],
+    title="🎤 AI Meeting Notes",
+    description="Upload audio to get instant transcripts and summaries.",
+)
+
+if __name__ == "__main__":
+    app.launch()
+```
+
+Our app will run on port 7860 and look like this:
+
+![Gradio app](https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/inference-providers-guides/gradio-app.png)
+
+</details>
+
+To deploy, we'll need to create a new Space and upload our files.
+
+1. **Create a new Space**: Go to [huggingface.co/new-space](https://huggingface.co/new-space)
+2. **Choose Gradio SDK** and make it public
+3. **Upload your files**: Upload `app.py`
+4. **Add your token**: In Space settings, add `HF_TOKEN` as a secret (get it from [your settings](https://huggingface.co/settings/tokens))
+5. **Launch**: Your app will be live at `https://huggingface.co/spaces/your-username/your-space-name`
+
+> **Note**: While we used CLI authentication locally, Spaces requires the token as a secret for the deployment environment.
+
+</hfoption>
+<hfoption id="javascript">
+
+For JavaScript deployment, create a simple static HTML file:
+
+<details>
+<summary><strong>📋 Click to view the complete index.html file</strong></summary>
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎤 AI Meeting Notes</title>
+    <style>
+        body { font-family: system-ui; max-width: 600px; margin: 50px auto; padding: 20px; }
+        .upload { border: 2px dashed #ccc; padding: 40px; text-align: center; margin: 20px 0; cursor: pointer; }
+        .upload:hover { border-color: #007bff; }
+        button { background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; }
+        .loading { display: none; text-align: center; margin: 20px 0; }
+        .results { display: none; margin-top: 20px; }
+        .result { background: #f5f5f5; padding: 15px; margin: 10px 0; border-radius: 4px; }
+        .error { color: red; background: #ffe6e6; padding: 15px; border-radius: 4px; display: none; }
+        input[type="file"] { display: none; }
+    </style>
+</head>
+<body>
+    <h1>🎤 AI Meeting Notes</h1>
+       
+    <div class="upload" onclick="document.getElementById('file').click()">
+        <input type="file" id="file" accept="audio/*">
+        <p>Upload audio file</p>
+        <button type="button">Choose File</button>
+    </div>
+    
+    <div class="loading" id="loading">Processing...</div>
+    <div class="error" id="error"></div>
+    
+    <div class="results" id="results">
+        <div class="result">
+            <h3>📝 Transcript</h3>
+            <div id="transcript"></div>
+        </div>
+        <div class="result">
+            <h3>📋 Summary</h3>
+            <div id="summary"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { InferenceClient } from 'https://esm.sh/@huggingface/inference';
+        
+        // Access the token from Hugging Face Spaces secrets
+        const HF_TOKEN = window.huggingface?.variables?.HF_TOKEN;
+        
+        // Add error handling for missing token
+        if (!HF_TOKEN) {
+            showError('HF_TOKEN not configured. Please add it in Space settings.');
+            return;
+        }
+        
+        document.getElementById('file').onchange = async (e) => {
+            if (!e.target.files[0]) return;
+            
+            const file = e.target.files[0];
+            
+            show(document.getElementById('loading'));
+            hide(document.getElementById('results'), document.getElementById('error'));
+            
+            try {
+                console.log('🎤 Starting transcription...');
+                const transcript = await transcribe(file);
+                console.log('✅ Transcription completed:', transcript.substring(0, 100) + '...');
+                
+                console.log('🖊️ Starting summarization...');
+                const summary = await summarize(transcript);
+                console.log('✅ Summary completed:', summary.substring(0, 100) + '...');
+                
+                document.getElementById('transcript').textContent = transcript;
+                document.getElementById('summary').textContent = summary;
+                
+                hide(document.getElementById('loading'));
+                show(document.getElementById('results'));
+            } catch (error) {
+                hide(document.getElementById('loading'));
+                showError(`Error: ${error.message}`);
+            }
+        };
+        
+        async function transcribe(file) {
+            const client = new InferenceClient(HF_TOKEN);
+
+            const output = await client.automaticSpeechRecognition({
+                data: file,
+                model: "openai/whisper-large-v3-turbo",
+                provider: "auto"
+            });
+            
+            return output.text || output || 'Transcription completed';
+        }
+        
+        async function summarize(transcript) {
+            const client = new InferenceClient(HF_TOKEN);
+
+            const prompt = `Analyze this meeting transcript and provide:
+            1. A concise summary of key points
+            2. Action items with responsible parties
+            3. Important decisions made
+
+            Transcript: ${transcript}
+
+            Format with clear sections:
+            ## Summary
+            ## Action Items  
+            ## Decisions Made`;
+
+            const response = await client.chatCompletion({
+                model: "deepseek-ai/DeepSeek-R1-0528",
+                messages: [
+                    {
+                        role: "user", 
+                        content: prompt
+                    }
+                ],
+                max_tokens: 1000
+            }, {
+                provider: "auto"
+            });
+            
+            return response.choices?.[0]?.message?.content || response || 'No summary available';
+        }
+        
+        const show = el => el.style.display = 'block';
+        const hide = (...els) => els.forEach(el => el.style.display = 'none');
+        const showError = msg => {
+            const error = document.getElementById('error');
+            error.innerHTML = msg;
+            show(error);
+        };
+    </script>
+</body>
+</html>
+```
+
+We can run our app locally by going to the file from our browser.
+
+![Local app](https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/inference-providers-guides/js-app.png)
+
+</details>
+
+To deploy:
+
+1. **Create a new Space**: Go to [huggingface.co/new-space](https://huggingface.co/new-space)
+2. **Choose Static SDK** and make it public
+3. **Upload your file**: Upload `index.html`
+4. **Add your token as a secret**: In Space settings, add `HF_TOKEN` as a **Secret**
+5. **Launch**: Your app will be live at `https://huggingface.co/spaces/your-username/your-space-name`
+
+> **Note**: The token is securely managed by Hugging Face Spaces and accessed via `window.huggingface.variables.HF_TOKEN`.
+
+</hfoption>
+</hfoptions>
+
+## Next Steps
+
+Congratulations! You've created a production-ready AI application that: handles real-world tasks, provides a professional interface, scales automatically, and costs efficiently. If you want to explore more providers, you can check out the [Inference Providers](https://huggingface.co/inference-providers) page. Or here are some ideas for next steps:
+
+- **Improve your prompt**: Try different prompts to improve the quality for your use case
+- **Try different models**: Experiment with various speech and text models
+- **Compare performance**: Benchmark speed vs. accuracy across providers
+
+Up next: learn how to deploy a dedicated Inference Endpoint and call it from your apps.
