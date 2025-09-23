@@ -1,6 +1,14 @@
 # Hugging Face MCP Server
 
-The Hugging Face MCP (Model Context Protocol) Server connects your MCP-compatible AI assistant (such as VS Code, Cursor, Zed, or Claude Desktop) directly to the Hugging Face Hub. Once connected, your assistant can search and explore Hub resources and use community tools, all from within your editor, chat application, or command line interface.
+The Hugging Face MCP (Model Context Protocol) Server connects your MCP-compatible AI assistant (such as VS Code, Cursor, Zed, or Claude Desktop) directly to the Hugging Face Hub. MCP is a protocol that allows AI assistants to use external tools and data sources as if they were built-in features.
+
+<Tip warning={true}>
+
+This section covers advanced integration features. If you're new to AI development, you can skip this section and come back to it later as you become more comfortable with the basics.
+
+</Tip>
+
+Once connected, your assistant can search and explore Hub resources and use community tools, all from within your editor, chat application, or command line interface.
 
 <Tip>
 
@@ -18,7 +26,7 @@ The server provides carefully curated tools that work seamlessly across all supp
 
 ## Get started
 
-Getting started with the Hugging Face MCP Server requires three straightforward steps.
+Getting started with the Hugging Face MCP Server requires three straightforward steps. Note that you'll need to have an MCP-compatible client installed first.
 
 First, open your MCP settings by visiting https://huggingface.co/settings/mcp while logged into your Hugging Face account.
 
@@ -38,10 +46,10 @@ The settings page generates the exact configuration your client expects. Use it 
 
 After connecting the server to your assistant, you can leverage Hugging Face tools through natural language requests. Here are some example prompts that demonstrate the server's capabilities:
 
-- “Search Hugging Face models for Qwen 3 quantizations.”
-- “Find a Space that can transcribe audio files.”
-- “Show datasets about weather time‑series.”
-- “Create a 1024 × 1024 image of a cat in Ghibli style.”
+- "Search Hugging Face models for Qwen 3 quantizations."
+- "Find a Space that can transcribe audio files."
+- "Show datasets about weather time‑series."
+- "Create a 1024 × 1024 image of a cat in Ghibli style."
 
 Your assistant will call the appropriate MCP tools exposed by the Hugging Face MCP Server, including those provided by community Spaces, and return comprehensive results including titles, authors, download statistics, community feedback, and direct links. You can then open resources directly on the Hub or continue exploring related content within the same conversation.
 

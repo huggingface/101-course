@@ -98,6 +98,7 @@ The process is straightforward: send a request to the model with your input, rec
 from huggingface_hub import InferenceClient
 
 client = InferenceClient()
+
 response = client.text_generation(
     "Write a short story about a robot:",
     model="microsoft/DialoGPT-large"
@@ -113,71 +114,92 @@ Go deeper: We're moving pretty fast over these topics, but at the end of this ch
 
 </Tip>
 
-## Local Apps
+## How to Use Local Apps
 
-Running models on your computer provides complete control and privacy for your AI applications.
+Local apps are applications that can run Hugging Face models directly on your machine. To get started:
 
-Local execution offers several compelling advantages. Your data never leaves your machine, ensuring complete privacy and security. The speed depends entirely on your hardware rather than server availability or network conditions. You have complete control over model configuration and can customize exactly how you want them to behave. There are no API fees, giving you unlimited usage once you've downloaded the model.
-
-## How to Get Started
-
-Getting started with local apps involves a few straightforward steps.
-
-First, enable Local Apps in your account settings if this feature is available to you.
+1. **Enable local apps** in your [Local Apps settings](https://huggingface.co/settings/local-apps).
 
 ![Local Apps](https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/local-apps/settings.png)
 
-Next, choose a supported model from the Hub by searching for models compatible with your preferred local app.
+1. **Choose a supported model** from the Hub by searching for it. You can filter by `app` in the `Other` section of the navigation bar: 
 
 ![Local Apps](https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/local-apps/search_llamacpp.png)
 
-Then select the local app from the "Use this model" dropdown on the model page.
+3. **Select the local app** from the "Use this model" dropdown on the model page.
 
 ![Local Apps](https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/local-apps/button.png)
 
-Finally, copy and run the provided command in your terminal.
+4. **Copy and run** the provided command in your terminal.
 
 ![Local Apps](https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/local-apps/command.png)
 
-<Tip>
-New to local apps? Start with LM Studio or Jan - they have user-friendly interfaces that make getting started easy!
-</Tip>
+## Supported Local Apps
 
-## Popular Local Apps
+The best way to check if a local app is supported is to go to the Local Apps settings and see if the app is listed. Here is a quick overview of some of the most popular local apps:
+
+<Tip>
+
+👨‍💻 To use these local apps, copy the snippets from the model card as above.
+
+👷 If you're building a local app, you can learn about integrating with the Hub in [this guide](https://huggingface.co/docs/hub/en/models-adding-libraries).
+
+</Tip>
 
 ### Llama.cpp
 
-Llama.cpp is a high-performance C/C++ library optimized for CPU inference. Based on the [GGUF format](https://huggingface.co/docs/hub/en/gguf) for efficient model loading, it's ideal for CPU-based inference when you need maximum performance.
+Llama.cpp is a high-performance C/C++ library for running LLMs locally with optimized inference across lots of different hardware, including CPUs, CUDA and Metal.
+
+**Advantages:**
+- Extremely fast performance for CPU-based models on multiple CPU families
+- Low resource usage
+- Multiple interface options (CLI, server, Python library)
+- Hardware-optimized for CPUs and GPUs
+
+To use Llama.cpp, navigate to the model card and click "Use this model" and copy the command.
 
 ```sh
-# Install with brew (Mac/Linux)
-brew install llama.cpp
-
-# Run a model directly from the Hub
-llama-cli -hf bartowski/Llama-3.2-3B-Instruct-GGUF:Q8_0
+# Load and run the model:
+./llama-server -hf unsloth/gpt-oss-20b-GGUF:Q4_K_M
 ```
 
-### LM Studio
 
-LM Studio is a desktop application with an intuitive graphical interface for downloading and running local LLMs. It's perfect for beginners who want a GUI rather than command-line tools. Features include a built-in model browser and downloader, a chat interface similar to ChatGPT, and developer APIs for integration with other applications.
+### Ollama
+
+Ollama is an application that lets you run large language models locally on your computer with a simple command-line interface.
+
+**Advantages:**
+- Easy installation and setup
+- Direct integration with Hugging Face Hub
+
+To use Ollama, navigate to the model card and click "Use this model" and copy the command.
+
+```sh
+ollama run hf.co/unsloth/gpt-oss-20b-GGUF:Q4_K_M
+```
 
 ### Jan
 
-Jan is an open-source chat application that can run completely offline with document chat capabilities. It's designed for privacy-focused users who want complete offline operation. You can upload and chat with your files, and it provides an OpenAI-compatible API server for integration with other tools.
+Jan is an open-source ChatGPT alternative that runs entirely offline with a user-friendly interface.
 
-<Tip>
-Model formats matter. Look for GGUF format models — they're optimized for local inference and work with most local apps. You can [browse GGUF models](https://huggingface.co/models?library=gguf).
-</Tip>
+**Advantages:**
+- User-friendly GUI
+- Chat with documents and files
+- OpenAI-compatible API server, so you can run models and use them from other apps
 
-## Finding the Right Model
+To use Jan, navigate to the model card and click "Use this model". Jan will open and you can start chatting through the interface.
 
-With many models available on the Hub, finding the right one for your needs requires some strategy.
+### LM Studio
 
-Browse by task using the task categories like text generation, image creation, or translation. Each category displays the most popular and recently updated models, helping you compare different approaches and performance levels.
+LM Studio is a desktop application that provides an easy way to download, run, and experiment with local LLMs.
 
-Check the statistics to understand community adoption and quality. Downloads indicate real-world usage and community acceptance. Likes provide feedback about model quality from users. Recent updates suggest active development and ongoing maintenance.
+**Advantages:**
+- Intuitive graphical interface
+- Built-in model browser
+- Developer tools and APIs
+- Free for personal and commercial use
 
-Filter by your specific needs to narrow down options. Consider model size - smaller models work better for mobile or real-time applications, while larger models handle more complex tasks. Look for models trained on your target languages if you need multilingual support. Make sure the license fits your use case, whether that's commercial application, research, or personal use.
+Navigate to the model card and click "Use this model". LM Studio will open and you can start chatting through the interface.
 
 ## Your Next Challenge
 
