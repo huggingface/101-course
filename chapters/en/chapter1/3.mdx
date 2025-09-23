@@ -41,69 +41,56 @@ For audio, try a text-to-speech model.
 
 ## Building with open source models
 
-Beyond trying models, you can build your own tools and applications.
+Beyond trying models, you can build your own tools and applications using several approaches, each with different levels of complexity and control.
 
-**🌤️ Widgets** - Try models directly in their model cards. This will give a quick overview of what the model can do.
+**Widgets** allow you to try models directly in their model cards. This gives you a quick overview of what the model can do without any setup or account requirements.
 
-**🖥️ The Playground** - Try models directly on the website. No coding required.
+**The Playground** lets you try models directly on the website with advanced controls and parameter tuning. No coding is required, but you get more customization options.
 
-**🔌 API Calls** - Integrate models via simple HTTP requests.
+**API Calls** enable you to integrate models via simple HTTP requests into your own applications and services.
 
-**🐍 Python Libraries** - Download and run models locally for full control.
+**Python Libraries** let you download and run models locally for full control over the execution environment.
 
 <Tip>
 
-**Start simple!** Most people begin with browser widgets to understand what models can do, then move to APIs or Python as their projects grow more complex.
+Start simple! Most people begin with browser widgets to understand what models can do, then move to APIs or Python as their projects grow more complex.
 
 </Tip>
 
-## 🌤️ Widgets - Quick Model Testing
+## Widgets - Quick Model Testing
 
 Every model on the Hub has an interactive widget that lets you test it instantly. No account needed, no setup - just type and see what happens!
 
-**How to Use Widgets:**
-1. Visit any model page. For example, [`openai/gpt-oss-120b`](https://huggingface.co/openai/gpt-oss-120b)
-2. Look for the widget on the right side of the screen
-3. Try the example inputs first, then experiment with your own
+To use widgets effectively, visit any model page such as [`openai/gpt-oss-120b`](https://huggingface.co/openai/gpt-oss-120b). Look for the widget on the right side of the screen, which provides an immediate way to interact with the model. Start by trying the example inputs first to understand the expected format, then experiment with your own inputs to see how the model responds.
 
-**What You Can Try:**
-- **Text models**: Type prompts for stories, questions, or creative writing. For example, [`openai/gpt-oss-120b`](https://huggingface.co/openai/gpt-oss-120b)
-- **Image models**: Describe what you want to see and get custom images. For example, [Qwen Image Edit](https://huggingface.co/spaces/Qwen/Qwen-Image-Edit)
-- **Text to speech models**: Type in text and get audio. For example, [Kokoro](https://huggingface.co/hexgrad/Kokoro-82M)
+Different types of models offer different interaction possibilities. Text models let you type prompts for stories, questions, or creative writing, as demonstrated by models like [`openai/gpt-oss-120b`](https://huggingface.co/openai/gpt-oss-120b). Image models allow you to describe what you want to see and generate custom images. Text-to-speech models convert your written text into audio output, such as the [Kokoro](https://huggingface.co/hexgrad/Kokoro-82M) model.
 
 <Tip>
 
-**Widget not working?** Some models are popular and may be busy. Try again in a few minutes, or look for similar models that aren't as crowded.
+Widget not working? Some models are popular and may be busy. Try again in a few minutes, or look for similar models that aren't as crowded.
 
 </Tip>
 
-## 🖥️ The Playground - Advanced Experimentation
+## The Playground - Advanced Experimentation
 
-The Playground offers more controls and settings to understand and compare models.
+The Playground offers more sophisticated controls and settings that help you understand and compare models in depth.
 
-**What Makes Playgrounds Special:**
-- **Parameter controls**: Adjust temperature, length, and other settings
-- **Multiple models**: Compare different models side by side
-- **Save and share experiments**: Keep track of what works best
-- **Provider selection**: Route requests via different providers
+What makes Playgrounds particularly valuable is their advanced parameter controls. You can adjust temperature to control randomness, modify length limits, and experiment with other settings that affect model behavior. The ability to compare multiple models side by side helps you understand which approach works best for your specific use case. You can save and share successful experiments, building a library of configurations that work well for different tasks. Provider selection allows you to route requests through different inference providers based on your needs for speed, cost, or specific capabilities.
 
 <Tip>
 
-**Pro Tips:**
+Pro Tips:
 - Start with default settings, then experiment with one parameter at a time
 - Save combinations that work well for future use
 - Try the same prompt with different models to see how they compare
 
 </Tip>
 
-## 🔌 API Calls - Build Real Applications
+## API Calls - Build Real Applications
 
-Ready to integrate AI into your application? APIs let you add AI capabilities with a few lines of code.
+Ready to integrate AI into your application? APIs let you add AI capabilities with just a few lines of code.
 
-**How APIs Work:**
-1. Send a request to the model with your input
-2. Get back the AI's response from the API
-3. Use that response in your application
+The process is straightforward: send a request to the model with your input, receive the AI's response from the API, and use that response in your application. This simple pattern enables powerful integrations without the complexity of managing models yourself.
 
 **Simple API Example (Python):**
 
@@ -118,59 +105,50 @@ response = client.text_generation(
 print(response)
 ```
 
-**API Benefits:**
-- **No setup**: Models run on Hugging Face servers, not yours
-- **Auto-scaling**: Handles traffic spikes automatically  
-- **Provider selection**: Choose from providers like Hugging Face, Together AI, and more
-- **Free usage**: Limited free usage is available for experimentation
+APIs provide significant advantages for application development. There's no setup required since models run on Hugging Face servers, not yours. The infrastructure automatically handles traffic spikes through auto-scaling. You can choose from multiple providers like Hugging Face, Together AI, and others based on your specific needs. Limited free usage is available for experimentation, letting you test before committing to paid plans.
 
 <Tip>
 
-**Go deeper**: We're moving pretty fast over these topics, but at the end of this chapter we'll dive deep into building AI applications with APIs.
+Go deeper: We're moving pretty fast over these topics, but at the end of this chapter we'll dive deep into building AI applications with APIs.
 
 </Tip>
 
-## 🖥️ Local Apps
+## Local Apps
 
-Run models on your computer without sending data to remote servers.
+Running models on your computer provides complete control and privacy for your AI applications.
 
-**Why Use Local Apps:**
-- **Privacy**: Your data never leaves your machine
-- **Speed**: Your hardware is the limiting factor, not server speed
-- **Control**: Configure models exactly how you want them
-- **Cost**: No API fees for unlimited usage
+Local execution offers several compelling advantages. Your data never leaves your machine, ensuring complete privacy and security. The speed depends entirely on your hardware rather than server availability or network conditions. You have complete control over model configuration and can customize exactly how you want them to behave. There are no API fees, giving you unlimited usage once you've downloaded the model.
 
 ## How to Get Started
 
-To get started:
+Getting started with local apps involves a few straightforward steps.
 
-1. **Enable Local Apps** in your account settings (if available).
+First, enable Local Apps in your account settings if this feature is available to you.
 
 ![Local Apps](https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/local-apps/settings.png)
 
-1. **Choose a supported model** from the Hub by searching for it.
+Next, choose a supported model from the Hub by searching for models compatible with your preferred local app.
 
 ![Local Apps](https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/local-apps/search_llamacpp.png)
 
-3. **Select the local app** from the "Use this model" dropdown on the model page.
+Then select the local app from the "Use this model" dropdown on the model page.
 
 ![Local Apps](https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/local-apps/button.png)
 
-4. **Copy and run** the provided command in your terminal.
+Finally, copy and run the provided command in your terminal.
 
 ![Local Apps](https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/local-apps/command.png)
 
 <Tip>
-**New to local apps?** Start with LM Studio or Jan - they have user-friendly interfaces that make getting started easy!
+New to local apps? Start with LM Studio or Jan - they have user-friendly interfaces that make getting started easy!
 </Tip>
 
 ## Popular Local Apps
 
 ### Llama.cpp
 
-High-performance C/C++ library optimized for CPU inference. Based on the [GGUF format](https://huggingface.co/docs/hub/en/gguf) for efficient model loading.
+Llama.cpp is a high-performance C/C++ library optimized for CPU inference. Based on the [GGUF format](https://huggingface.co/docs/hub/en/gguf) for efficient model loading, it's ideal for CPU-based inference when you need maximum performance.
 
-**Best for:** CPU-based inference, maximum performance
 ```sh
 # Install with brew (Mac/Linux)
 brew install llama.cpp
@@ -181,60 +159,42 @@ llama-cli -hf bartowski/Llama-3.2-3B-Instruct-GGUF:Q8_0
 
 ### LM Studio
 
-Desktop application with an intuitive graphical interface for downloading and running local LLMs.
-
-**Best for:** Beginners who want a GUI
-- Built-in model browser and downloader
-- Chat interface similar to ChatGPT
-- Developer APIs for integration
+LM Studio is a desktop application with an intuitive graphical interface for downloading and running local LLMs. It's perfect for beginners who want a GUI rather than command-line tools. Features include a built-in model browser and downloader, a chat interface similar to ChatGPT, and developer APIs for integration with other applications.
 
 ### Jan
 
-Open-source chat application that can run offline with document chat capabilities.
-
-**Best for:** Privacy-focused users
-- Complete offline operation
-- Upload and chat with your files
-- OpenAI-compatible API server
+Jan is an open-source chat application that can run completely offline with document chat capabilities. It's designed for privacy-focused users who want complete offline operation. You can upload and chat with your files, and it provides an OpenAI-compatible API server for integration with other tools.
 
 <Tip>
-**Model formats matter.** Look for GGUF format models — they're optimized for local inference and work with most local apps. You can [browse GGUF models](https://huggingface.co/models?library=gguf).
+Model formats matter. Look for GGUF format models — they're optimized for local inference and work with most local apps. You can [browse GGUF models](https://huggingface.co/models?library=gguf).
 </Tip>
 
 ## Finding the Right Model
 
-With many models on the Hub, here are some tips:
+With many models available on the Hub, finding the right one for your needs requires some strategy.
 
-**Browse by Task:**
-- Use the task categories (text generation, image creation, translation, etc.)
-- Each category shows the most popular and recent models
-- Compare different approaches and performance levels
+Browse by task using the task categories like text generation, image creation, or translation. Each category displays the most popular and recently updated models, helping you compare different approaches and performance levels.
 
-**Check the Stats:**
-- **Downloads**: Shows community adoption and real-world usage
-- **Likes**: Community feedback and quality indicators
-- **Recent updates**: Active development and maintenance
+Check the statistics to understand community adoption and quality. Downloads indicate real-world usage and community acceptance. Likes provide feedback about model quality from users. Recent updates suggest active development and ongoing maintenance.
 
-**Filter by Your Needs:**
-- **Model size**: Smaller for mobile/real-time, larger for complex tasks
-- **Language**: Find models trained on your target languages
-- **License**: Make sure it fits your use case (commercial, research, etc.)
+Filter by your specific needs to narrow down options. Consider model size - smaller models work better for mobile or real-time applications, while larger models handle more complex tasks. Look for models trained on your target languages if you need multilingual support. Make sure the license fits your use case, whether that's commercial application, research, or personal use.
 
 ## Your Next Challenge
 
 Ready to put this knowledge into practice? Pick one approach and try it this week:
 
-1. **Widget Explorer**: Try 5 different models using their widgets
-2. **API Builder**: Make your first API call and integrate it into a simple app
-3. **Local Runner**: Download a model and run it locally with Python
-4. **Playground Pro**: Experiment with parameters in different playgrounds
+Widget Explorer: Try 5 different models using their widgets to understand the variety of capabilities available.
+
+API Builder: Make your first API call and integrate it into a simple application to see how easy it is to add AI features.
+
+Local Runner: Download a model and run it locally with Python to experience the full control that local execution provides.
+
+Playground Pro: Experiment with parameters in different playgrounds to understand how model settings affect output quality.
 
 <Tip>
-**Start small!** Pick the approach that matches your current skill level. You can always progress to more advanced methods later.
+
+Start small! Pick the approach that matches your current skill level. You can always progress to more advanced methods later.
+
 </Tip>
 
 The world of open-source AI is waiting for you to explore, experiment, and create. Every expert started as a beginner - your journey starts with trying your first model!
-
----
-
-*Ready to start building? Visit [huggingface.co/models](https://huggingface.co/models) and begin your AI development journey.*
