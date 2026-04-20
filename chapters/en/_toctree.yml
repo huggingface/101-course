@@ -1,0 +1,61 @@
+- title: "0. Introduction"
+  sections:
+  - local: chapter0/1
+    title: Introduction
+
+- title: "1. The Hugging Face Hub"
+  sections:
+  - local: chapter1/1
+    title: The Hugging Face Hub
+  - local: chapter1/2
+    title: Using the Hub
+  - local: chapter1/3
+    title: Sharing pretrained models
+  - local: chapter1/4
+    title: Building a model card
+  - local: chapter1/5
+    title: Using the Hugging Face MCP Server
+  - local: chapter1/6
+    title: Part 1 completed!
+  - local: chapter1/7
+    title: End-of-chapter quiz
+
+- title: "2. AI Inference on Hugging Face"
+  sections:
+  - local: chapter2/1
+    title: Introduction
+  - local: chapter2/2
+    title: Inference Providers
+  - local: chapter2/3
+    title: End to end AI Application with Inference Providers
+  - local: chapter2/4
+    title: Inference Endpoints
+  - local: chapter2/5
+    title: End to end AI Application with Inference Endpoints
+  - local: chapter2/6
+    title: Part 2 completed!
+  - local: chapter2/7
+    title: End-of-chapter quiz
+
+- title: "3. Building AI Demos with Gradio"
+  sections:
+  - local: chapter3/1
+    title: Introduction to Gradio
+  - local: chapter3/2
+    title: Building your first demo
+  - local: chapter3/3
+    title: Understanding the Interface class
+  - local: chapter3/4
+    title: Sharing demos with others
+  - local: chapter3/5
+    title: Integrations with the Hugging Face Hub
+  - local: chapter3/6
+    title: Advanced Interface features
+  - local: chapter3/7
+    title: Introduction to Blocks
+  - local: chapter3/8
+    title: MCP Servers in Gradio
+  - local: chapter3/9
+    title: Part 3 completed!
+  - local: chapter3/10
+    title: End-of-chapter quiz

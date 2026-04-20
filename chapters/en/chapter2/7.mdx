@@ -1,0 +1,63 @@
+# End-of-chapter quiz
+
+Let's test what you learned in this chapter!
+
+### 1. When should you prefer Inference Providers?
+
+<Question
+	choices={[
+        {
+			text: "When you want a dedicated, single-model API with strict SLAs",
+			explain: "That's Inference Endpoints.",
+        },
+        {
+			text: "When you want the fastest path to try many models via a simple API",
+			explain: "Correct! Providers emphasize speed and breadth.",
+			correct: true
+        },
+    ]}
+/>
+
+### 2. How does `InferenceClient` pick a provider by default?
+
+<Question
+	choices={[
+        {
+			text: "It auto-selects based on availability and preferences",
+			explain: "Correct.",
+			correct: true
+        },
+        {
+			text: "It always uses a single fixed vendor",
+			explain: "Not correct.",
+        },
+    ]}
+/>
+
+### 3. What status should you wait for before calling a new endpoint?
+
+<Question
+	choices={[
+        { text: "CREATING", explain: "Not ready yet." },
+        { text: "READY", explain: "Correct.", correct: true },
+        { text: "DELETING", explain: "It's being removed." },
+    ]}
+/>
+
+### 4. Which is a good practice for production?
+
+<Question
+	choices={[
+        { text: "No retries to fail fast", explain: "Add retries with backoff." },
+        { text: "Log latency and errors", explain: "Correct.", correct: true },
+    ]}
+/>
+
+### 5. How do you authenticate calls?
+
+<Question
+	choices={[
+        { text: "Include Authorization: Bearer {your_token}", explain: "Correct.", correct: true },
+        { text: "No auth needed for protected endpoints", explain: "Incorrect." },
+    ]}
+/>

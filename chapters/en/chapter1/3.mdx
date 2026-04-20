@@ -1,0 +1,222 @@
+# Using Open Source Models
+
+Ready to try some AI models? The Hugging Face Hub hosts many open-source models you can use right now — no setup required.
+
+What makes this special? You get access to the same models that power many AI applications, completely free. Whether you're a curious beginner or an experienced developer, you can experiment with text generation, image creation, translation, and more.
+
+<Tip>
+
+New to AI models? Think of them as specialized tools: some write text, some create images, some translate.
+
+</Tip>
+
+## Let's try some models!
+
+Let's try a text model (e.g., `openai/gpt-oss-120b`) in the Hugging Face Playground:
+
+<iframe 
+    src="https://huggingface.co/spaces/huggingface/text-generation-inference" 
+    frameborder="0"
+    width="850"
+    height="450"
+></iframe>
+
+Now try an image editing Space: [Qwen Image Edit](https://huggingface.co/spaces/Qwen/Qwen-Image-Edit).
+
+<iframe
+	src="https://qwen-qwen-image-edit.hf.space"
+	frameborder="0"
+	width="850"
+	height="450"
+></iframe>
+
+For audio, try a text-to-speech model.
+
+<iframe
+	src="https://nihalgazi-text-to-speech-unlimited.hf.space"
+	frameborder="0"
+	width="850"
+	height="450"
+></iframe>
+
+## Building with open source models
+
+Beyond trying models, you can build your own tools and applications using several approaches, each with different levels of complexity and control.
+
+**Widgets** allow you to try models directly in their model cards. This gives you a quick overview of what the model can do without any setup or account requirements.
+
+**The Playground** lets you try models directly on the website with advanced controls and parameter tuning. No coding is required, but you get more customization options.
+
+**API Calls** enable you to integrate models via simple HTTP requests into your own applications and services.
+
+**Python Libraries** let you download and run models locally for full control over the execution environment.
+
+<Tip>
+
+Start simple! Most people begin with browser widgets to understand what models can do, then move to APIs or Python as their projects grow more complex.
+
+</Tip>
+
+## Widgets - Quick Model Testing
+
+Every model on the Hub has an interactive widget that lets you test it instantly. No account needed, no setup - just type and see what happens!
+
+To use widgets effectively, visit any model page such as [`openai/gpt-oss-120b`](https://huggingface.co/openai/gpt-oss-120b). Look for the widget on the right side of the screen, which provides an immediate way to interact with the model. Start by trying the example inputs first to understand the expected format, then experiment with your own inputs to see how the model responds.
+
+Different types of models offer different interaction possibilities. Text models let you type prompts for stories, questions, or creative writing, as demonstrated by models like [`openai/gpt-oss-120b`](https://huggingface.co/openai/gpt-oss-120b). Image models allow you to describe what you want to see and generate custom images. Text-to-speech models convert your written text into audio output, such as the [Kokoro](https://huggingface.co/hexgrad/Kokoro-82M) model.
+
+<Tip>
+
+Widget not working? Some models are popular and may be busy. Try again in a few minutes, or look for similar models that aren't as crowded.
+
+</Tip>
+
+## The Playground - Advanced Experimentation
+
+The Playground offers more sophisticated controls and settings that help you understand and compare models in depth.
+
+What makes Playgrounds particularly valuable is their advanced parameter controls. You can adjust temperature to control randomness, modify length limits, and experiment with other settings that affect model behavior. The ability to compare multiple models side by side helps you understand which approach works best for your specific use case. You can save and share successful experiments, building a library of configurations that work well for different tasks. Provider selection allows you to route requests through different inference providers based on your needs for speed, cost, or specific capabilities.
+
+<Tip>
+
+Pro Tips:
+- Start with default settings, then experiment with one parameter at a time
+- Save combinations that work well for future use
+- Try the same prompt with different models to see how they compare
+
+</Tip>
+
+## API Calls - Build Real Applications
+
+Ready to integrate AI into your application? APIs let you add AI capabilities with just a few lines of code.
+
+The process is straightforward: send a request to the model with your input, receive the AI's response from the API, and use that response in your application. This simple pattern enables powerful integrations without the complexity of managing models yourself.
+
+**Simple API Example (Python):**
+
+```python
+from huggingface_hub import InferenceClient
+
+client = InferenceClient()
+
+response = client.text_generation(
+    "Write a short story about a robot:",
+    model="microsoft/DialoGPT-large"
+)
+print(response)
+```
+
+APIs provide significant advantages for application development. There's no setup required since models run on Hugging Face servers, not yours. The infrastructure automatically handles traffic spikes through auto-scaling. You can choose from multiple providers like Hugging Face, Together AI, and others based on your specific needs. Limited free usage is available for experimentation, letting you test before committing to paid plans.
+
+<Tip>
+
+Go deeper: We're moving pretty fast over these topics, but at the end of this chapter we'll dive deep into building AI applications with APIs.
+
+</Tip>
+
+## How to Use Local Apps
+
+Local apps are applications that can run Hugging Face models directly on your machine. To get started:
+
+1. **Enable local apps** in your [Local Apps settings](https://huggingface.co/settings/local-apps).
+
+![Local Apps](https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/local-apps/settings.png)
+
+1. **Choose a supported model** from the Hub by searching for it. You can filter by `app` in the `Other` section of the navigation bar: 
+
+![Local Apps](https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/local-apps/search_llamacpp.png)
+
+3. **Select the local app** from the "Use this model" dropdown on the model page.
+
+![Local Apps](https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/local-apps/button.png)
+
+4. **Copy and run** the provided command in your terminal.
+
+![Local Apps](https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/local-apps/command.png)
+
+## Supported Local Apps
+
+The best way to check if a local app is supported is to go to the Local Apps settings and see if the app is listed. Here is a quick overview of some of the most popular local apps:
+
+<Tip>
+
+👨‍💻 To use these local apps, copy the snippets from the model card as above.
+
+👷 If you're building a local app, you can learn about integrating with the Hub in [this guide](https://huggingface.co/docs/hub/en/models-adding-libraries).
+
+</Tip>
+
+### Llama.cpp
+
+Llama.cpp is a high-performance C/C++ library for running LLMs locally with optimized inference across lots of different hardware, including CPUs, CUDA and Metal.
+
+**Advantages:**
+- Extremely fast performance for CPU-based models on multiple CPU families
+- Low resource usage
+- Multiple interface options (CLI, server, Python library)
+- Hardware-optimized for CPUs and GPUs
+
+To use Llama.cpp, navigate to the model card and click "Use this model" and copy the command.
+
+```sh
+# Load and run the model:
+./llama-server -hf unsloth/gpt-oss-20b-GGUF:Q4_K_M
+```
+
+
+### Ollama
+
+Ollama is an application that lets you run large language models locally on your computer with a simple command-line interface.
+
+**Advantages:**
+- Easy installation and setup
+- Direct integration with Hugging Face Hub
+
+To use Ollama, navigate to the model card and click "Use this model" and copy the command.
+
+```sh
+ollama run hf.co/unsloth/gpt-oss-20b-GGUF:Q4_K_M
+```
+
+### Jan
+
+Jan is an open-source ChatGPT alternative that runs entirely offline with a user-friendly interface.
+
+**Advantages:**
+- User-friendly GUI
+- Chat with documents and files
+- OpenAI-compatible API server, so you can run models and use them from other apps
+
+To use Jan, navigate to the model card and click "Use this model". Jan will open and you can start chatting through the interface.
+
+### LM Studio
+
+LM Studio is a desktop application that provides an easy way to download, run, and experiment with local LLMs.
+
+**Advantages:**
+- Intuitive graphical interface
+- Built-in model browser
+- Developer tools and APIs
+- Free for personal and commercial use
+
+Navigate to the model card and click "Use this model". LM Studio will open and you can start chatting through the interface.
+
+## Your Next Challenge
+
+Ready to put this knowledge into practice? Pick one approach and try it this week:
+
+Widget Explorer: Try 5 different models using their widgets to understand the variety of capabilities available.
+
+API Builder: Make your first API call and integrate it into a simple application to see how easy it is to add AI features.
+
+Local Runner: Download a model and run it locally with Python to experience the full control that local execution provides.
+
+Playground Pro: Experiment with parameters in different playgrounds to understand how model settings affect output quality.
+
+<Tip>
+
+Start small! Pick the approach that matches your current skill level. You can always progress to more advanced methods later.
+
+</Tip>
+
+The world of open-source AI is waiting for you to explore, experiment, and create. Every expert started as a beginner - your journey starts with trying your first model!

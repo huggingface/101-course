@@ -1,0 +1,87 @@
+# The Hugging Face Hub
+
+Welcome to the Hugging Face Hub.
+
+The Hugging Face Hub is a collaborative platform for artificial intelligence development and deployment. It serves as a centralized repository where developers, researchers, and organizations share machine learning models, datasets, and applications.
+
+The platform functions as a version-controlled repository system for AI resources, similar to how GitHub works for code. It enables collaboration and sharing across the machine learning community.
+
+<Tip>
+
+It's not just for engineers! The Hub also includes demos, blog posts, and papers that you can read as you learn.
+
+</Tip>
+
+## How the Hub Works
+
+The Hub has become a central place for machine learning resources. These contributions span every domain from natural language processing and computer vision to audio and multimodal AI applications. The platform emphasizes openness and collaboration, with most resources available under open licenses.
+
+What sets the Hub apart is its emphasis on documentation and transparency. Every model, dataset, and application includes detailed documentation called "Cards" that explain the resource's purpose, capabilities, limitations, and ethical considerations. This documentation helps users understand how to use existing work responsibly and build upon it effectively.
+
+The platform uses Git-based version control, bringing software development best practices to machine learning. Changes to models are tracked, contributions are documented, and improvements can be shared with the community. This approach ensures reproducibility and enables collaborative development at scale.
+
+<Tip>
+
+People share their work openly. Students collaborate with researchers; small teams use the same tools as large companies.
+
+</Tip>
+
+## Models, Datasets, and Spaces
+
+The Hub's architecture is built around three fundamental components that work together to create a complete AI ecosystem.
+
+**Models** are the core intelligence of AI systems. The Hub hosts models covering text generation, image creation, speech recognition, translation, code generation, and many other tasks. These range from small, efficient models that can run on mobile devices to large, powerful models requiring significant computational resources. For example, you can find everything from lightweight language models like [SmolLM3](https://huggingface.co/HuggingFaceTB/SmolLM3-3B) to large, powerful reasoning models like [OpenAI's gpt-oss-120b](https://huggingface.co/openai/gpt-oss-120b).
+
+**Datasets** are mostly use to train and evaluate models, but they can also be used for other purposes like sharing model outputs or public archives. The Hub contains datasets spanning multiple languages, domains, and modalities. For example, you can find text instructions for training language models, images for computer vision tasks, audio datasets for speech processing, and specialized datasets for scientific research like [NASA's impact dataset](https://huggingface.co/nasa-impact).
+
+**Spaces** are demos that demonstrate model capabilities. These web-based apps allow anyone to try AI models without installation or technical setup. Spaces range from static html websites to complex usable applications. They serve multiple purposes: they help newcomers understand AI capabilities and provide builders with ways to showcase their work.
+
+## Building with the Hub
+
+The Hub supports advanced features for production use and development workflows. The Model Context Protocol (MCP) integration, available through the `huggingface_hub[mcp]` package, enables AI models to connect with external tools and data sources, expanding their capabilities beyond traditional text processing.
+
+![MCP](https://cdn-uploads.huggingface.co/production/uploads/5f17f0a0925b9863e28ad517/wWm_GeuWF17OrMyJT4tMx.png)
+
+For inference, the platform provides multiple hosting options through Inference Providers. In the example below, you can see how to use the `fal-ai` provider to run the `black-forest-labs/FLUX.1-Krea-dev` model. Which will be routed to the `fal-ai` provider model `black-forest-labs/FLUX.1-Krea-dev` and generate an image based on the prompt.
+
+<InferenceSnippet
+	pipeline="text-to-image"
+	providersMapping={{
+    "replicate": {modelId: "black-forest-labs/FLUX.1-Krea-dev", providerModelId: "black-forest-labs/FLUX.1-Krea-dev"},
+    "fal-ai": {modelId: "black-forest-labs/FLUX.1-Krea-dev", providerModelId: "black-forest-labs/FLUX.1-Krea-dev"},
+  }}
+/>
+
+## Who Uses the Hub
+
+The Hub democratizes access to cutting-edge AI technology. Beginners can explore and experiment with state-of-the-art models through web interfaces without any installation or setup. Comprehensive documentation and active community support help newcomers navigate the ecosystem and find solutions to common challenges.
+
+Developers benefit from the Hub's API-first approach, which allows rapid integration of AI capabilities into existing applications. The platform handles the complexity of model serving, scaling, and maintenance, allowing developers to focus on building great user experiences.
+
+Researchers and academics find the Hub valuable for sharing their work with the broader community and ensuring reproducibility of their results. The platform's emphasis on documentation and ethical considerations aligns with research best practices and supports responsible AI development.
+
+<Tip>
+
+Keep in mind that API usage has limits and costs. Most models offer free usage for experimentation, but check pricing for production use.
+
+</Tip>
+
+## The Power of Open Source Innovation
+
+The Hub operates on open-source principles, promoting transparency and collaborative development. This openness enables users to examine model training processes, understand limitations, and contribute improvements. The collaborative nature of open-source development accelerates innovation by allowing researchers and developers to build upon each other's work.
+
+<Tip>
+
+The collaborative nature of open source development helps accelerate innovation. When researchers and developers can build upon each other's work, the rate of discovery and improvement increases.
+
+</Tip>
+
+## Getting Started
+
+Getting started with the Hugging Face Hub is straightforward and welcoming to users at all experience levels.
+
+Begin by visiting the [Hugging Face Hub](https://huggingface.co) and exploring the various models and applications available. Many models include interactive widgets that allow you to test them immediately without any account or setup required. These widgets provide hands-on experience with AI capabilities and help build intuition about what different models can accomplish.
+
+Creating a [free account](https://huggingface.co/join) unlocks additional features including the ability to create your own repositories, participate in community discussions, and access certain models that require user agreement. The account setup process is straightforward and provides immediate access to the platform's collaborative features.
+
+Once you have an account, you can participate in community discussions, follow interesting creators and organizations, and begin contributing your own work to the ecosystem. The community is welcoming to newcomers and provides extensive support for those learning to work with AI technologies.

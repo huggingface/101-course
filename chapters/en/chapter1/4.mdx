@@ -1,0 +1,253 @@
+# Sharing What You've Built
+
+Ready to contribute to the AI community? Sharing your work on Hugging Face helps others learn and gives you useful feedback. Whether you've created a cool demo, fine-tuned a model, or collected a useful dataset, the community wants to see what you've built!
+
+Sharing your work helps others learn, gives you feedback to improve, and builds your reputation in the AI community. Plus, it's easier than you might think.
+
+## What You Can Share
+
+There are three main ways to share your AI work on Hugging Face:
+
+**Models** - Share trained or fine-tuned models that others can use directly or build upon
+
+**Datasets** - Upload datasets you've collected, cleaned, or created for others to use in their projects
+
+**Spaces** - Create interactive demos that let people try your AI applications in their browser
+
+<Tip>
+
+Spaces are a visible way to share your work. Interactive demos are useful for portfolios and feedback.
+
+</Tip>
+
+## Creating Your First Space
+
+Spaces are the easiest and most visible way to share your AI work. Here's how to create one:
+
+**1. Choose Your Framework**
+- **Gradio**: Best for beginners - creates interfaces with just a few lines of Python
+- **Streamlit**: Great for data apps and dashboards  
+- **Static HTML**: Full control for custom web experiences
+- **Docker**: Maximum flexibility for complex applications
+
+**2. Create Your Space**
+1. Go to [huggingface.co/new-space](https://huggingface.co/new-space)
+2. Choose your framework and visibility (public or private)
+3. Write your app code in the main file (for example, an `index.html` with `<h1>Hello World</h1>`)
+4. Push your changes - your Space will build and deploy automatically!
+
+**3. Make It Great**
+- Add a clear title and description
+- Include example inputs so users know what to try
+- Write a good README explaining what your Space does
+- Add screenshots or GIFs to show it in action
+
+## Sharing your first dataset
+
+You can share small datasets too — they don't need to be large LLM training corpora.
+
+**Uploading Datasets:**
+1. Go to [huggingface.co/new-dataset](https://huggingface.co/new-dataset)  
+2. Upload your data files (CSV, JSON, Parquet, etc.)
+3. Write a Dataset Card describing the data and how it was collected
+4. Include licensing information and any usage restrictions
+
+**Documentation tips:**
+- Explain what your model/dataset does in simple terms
+- Include example usage code
+- Be honest about limitations and potential biases  
+- Add evaluation metrics if you have them
+- Specify the license clearly
+
+## Exercise: Duplicate a Community Space
+
+The easiest way to get started is to duplicate a community space. This is handy if you want to use your own credits, do some private testing, or just customize the space to your liking.
+
+1. Go to the space you want to duplicate
+2. Click the menu icon in the top right and select "Duplicate this space"
+3. Name it something like `my-duplicate-space`
+4. Click "Create Space"
+5. You can now edit the space and deploy it to your own account.
+
+For example, why not duplicate [this transcription space](https://huggingface.co/spaces/nvidia/canary-1b-v2) from Nvidia and use it to transcribe your own audio files?
+
+## Exercise: Build a Dataset Visualization Space
+
+Let's put your knowledge into practice! We'll create a simple Gradio Space that visualizes data from a Hugging Face dataset. This exercise will teach you the basics of Spaces while creating something useful.
+
+### What We're Building
+
+A data explorer that lets users:
+- Select different countries from a dataset
+- View population statistics 
+- See results in both table and chart format
+
+### Step 1: Create Your Space
+
+1. Go to [huggingface.co/new-space](https://huggingface.co/new-space)
+2. Name it something like `my-data-explorer`
+3. Choose **Gradio** as your SDK
+4. Make it **Public** so others can see your work
+5. Click **Create Space**
+
+### Step 2: Write the Code
+
+Replace the contents of `app.py` with this code:
+
+```python
+import gradio as gr
+import pandas as pd
+
+# Sample dataset - in a real app, you'd load from Hugging Face datasets
+data = {
+    'Country': ['USA', 'China', 'India', 'Germany', 'Japan', 'Brazil'],
+    'Population': [331, 1439, 1380, 83, 125, 213],
+    'GDP': [21.43, 14.34, 3.17, 3.84, 4.94, 1.61],
+    'Area': [9.8, 9.6, 3.3, 0.36, 0.38, 8.5]
+}
+
+df = pd.DataFrame(data)
+
+def explore_data(country, show_chart):
+    """Function to filter and display data based on user selection"""
+    
+    if country == "All":
+        filtered_df = df
+        title = "All Countries Data"
+    else:
+        filtered_df = df[df['Country'] == country]
+        title = f"Data for {country}"
+    
+    # Create a simple text summary
+    summary = f"Showing data for {len(filtered_df)} country(ies)"
+    
+    if show_chart and len(filtered_df) > 1:
+        # Create a simple bar chart using Gradio's built-in plotting
+        chart_data = filtered_df[['Country', 'Population']].values.tolist()
+        return filtered_df, summary, chart_data
+    else:
+        return filtered_df, summary, None
+
+# Create the Gradio interface
+with gr.Blocks(title="Data Explorer") as demo:
+    gr.Markdown("# 📊 Country Data Explorer")
+    gr.Markdown("Explore population and economic data for different countries!")
+    
+    with gr.Row():
+        with gr.Column():
+            country_dropdown = gr.Dropdown(
+                choices=["All"] + df['Country'].tolist(),
+                value="All",
+                label="Select Country",
+                info="Choose a country to explore its data"
+            )
+            
+            show_chart = gr.Checkbox(
+                label="Show Population Chart", 
+                value=True,
+                info="Display a chart when viewing multiple countries"
+            )
+            
+            explore_btn = gr.Button("Explore Data", variant="primary")
+        
+        with gr.Column():
+            summary_text = gr.Textbox(
+                label="Summary",
+                interactive=False
+            )
+    
+    with gr.Row():
+        data_table = gr.Dataframe(
+            value=df,
+            label="Country Data",
+            interactive=False
+        )
+    
+    with gr.Row():
+        chart_plot = gr.BarPlot(
+            x="Country",
+            y="Population",
+            title="Population by Country (Millions)",
+            label="Population Chart",
+            visible=True
+        )
+    
+    # Set up the interaction
+    explore_btn.click(
+        fn=explore_data,
+        inputs=[country_dropdown, show_chart],
+        outputs=[data_table, summary_text, chart_plot]
+    )
+    
+    # Also trigger on dropdown change
+    country_dropdown.change(
+        fn=explore_data,
+        inputs=[country_dropdown, show_chart],
+        outputs=[data_table, summary_text, chart_plot]
+    )
+
+# Launch the app
+if __name__ == "__main__":
+    demo.launch()
+```
+
+### Step 3: Add Dependencies
+
+Create a `requirements.txt` file with:
+
+```
+gradio
+pandas
+```
+
+### Step 4: Customize Your Space
+
+1. **Update the README.md** with a description:
+```markdown
+# Country Data Explorer
+
+A simple Gradio app that lets you explore country statistics including population, GDP, and area data.
+
+## Features
+- Filter data by country
+- View data in table format  
+- Visualize population with charts
+
+Built as part of the Hugging Face 101 course!
+```
+
+2. **Add example data** in the description so users know what to expect
+
+### Step 5: Test and Deploy
+
+1. Commit your changes (the Space will automatically rebuild)
+2. Wait for the build to complete (check the logs if there are errors)
+3. Test your Space by trying different country selections
+4. Share the link with friends!
+
+### Bonus Challenges
+
+Once your basic Space is working, try these improvements:
+
+1. **Real Dataset**: Replace the sample data with a real dataset from [Hugging Face Datasets](https://huggingface.co/datasets)
+2. **More Visualizations**: Add different chart types (pie charts, scatter plots)
+3. **Better Styling**: Customize the appearance with CSS
+4. **More Interactions**: Add filtering by population range or GDP
+
+<Tip>
+**Space not working?** Check the "Logs" tab in your Space for errors. Common issues include missing dependencies in `requirements.txt` or syntax errors.
+</Tip>
+
+### Share and Engage
+
+Once your Space is working, promoting it helps you get feedback and connect with the community. Share the link in the Hugging Face Discord to get immediate feedback from experienced developers. Post about it on social media with #HuggingFace to reach a broader audience. Add it to your portfolio or resume as a concrete demonstration of your AI skills.
+
+Connecting with others in the community enhances your learning and opens collaboration opportunities. Browse other data visualization Spaces for inspiration and to understand different approaches to similar problems. Comment on Spaces you find interesting - creators appreciate feedback and it often leads to interesting conversations.
+
+### Track Your Impact
+
+Understanding how your Space performs helps you improve and learn what works. Monitor how many people have tried your Space using the analytics available in your Space settings. Pay attention to the feedback you're getting in comments and discussions. Notice whether people are finding it useful for exploring data or if they're using it in ways you didn't expect.
+
+## What's Next?
+
+Ready to build more advanced applications? In the next chapters, we'll explore how to combine multiple AI models, work with APIs, and create more sophisticated demos. The foundation you've built here will serve you well as we move into more complex territory.

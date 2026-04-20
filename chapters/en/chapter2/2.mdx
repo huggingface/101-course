@@ -1,0 +1,175 @@
+# Inference Providers
+
+Inference Providers are a simple, hosted way to run models via API without deploying infrastructure. You can route requests automatically to an available provider or choose a specific provider for a model.
+
+In this unit you'll learn the basics, make a first call, and then build a small app. Keep an eye on the Tips — they highlight common gotchas and best practices.
+
+## Key ideas
+
+- One client, many models: call text, image, and audio models with consistent APIs
+- Automatic or explicit provider selection
+- Streaming support for token-by-token generation
+- Simple auth using your Hugging Face token
+
+## Quickstart (Python)
+
+```python
+from huggingface_hub import InferenceClient
+
+# Create a client. By default, it will auto-pick a provider.
+client = InferenceClient()
+
+# Text generation
+response = client.text_generation(
+    "Write a short poem about the ocean.",
+    model="gpt2",  # replace with a model you want to try
+)
+print(response)
+
+# Image generation (example)
+# img_bytes = client.image_generation(
+#     prompt="a watercolor painting of a lighthouse at dawn",
+#     model="stabilityai/stable-diffusion-2",
+# )
+# with open("output.png", "wb") as f:
+#     f.write(img_bytes)
+```
+
+<Tip>
+
+To prefer a specific provider, pass `provider="..."` to your call (or when constructing the client). When in doubt, keep `provider="auto"` to use the first available provider based on your preferences.
+
+</Tip>
+
+## Authentication
+
+`InferenceClient` reads your token from the `HF_TOKEN` environment variable or you can pass `token` explicitly:
+
+```python
+from huggingface_hub import InferenceClient
+
+client = InferenceClient(token="hf_xxx")
+print(client.text_generation("Hello!", model="gpt2"))
+```
+
+## cURL example
+
+You can also call the Inference API directly with cURL:
+
+```bash
+curl -X POST \
+  -H "Authorization: Bearer $HF_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"inputs": "Write a haiku about the sea"}' \
+  https://api-inference.huggingface.co/models/gpt2
+```
+
+## Your first API call (Text-to-Image)
+
+Before coding, pick a model on the Hub with Inference Providers enabled and try the right-side widget. Then replicate the request in code.
+
+Python:
+```python
+import os
+from huggingface_hub import InferenceClient
+
+client = InferenceClient(
+    provider="auto",
+    api_key=os.environ["HF_TOKEN"],
+)
+
+# Returns a PIL.Image
+image = client.text_to_image(
+    "Astronaut riding a horse",
+    model="black-forest-labs/FLUX.1-schnell",
+)
+image.save("image.png")
+```
+
+TypeScript:
+```typescript
+import { InferenceClient } from "@huggingface/inference";
+
+const client = new InferenceClient(process.env.HF_TOKEN);
+
+const image = await client.textToImage({
+  provider: "auto",
+  model: "black-forest-labs/FLUX.1-schnell",
+  inputs: "Astronaut riding a horse",
+  parameters: { num_inference_steps: 5 },
+});
+// image is a Blob
+```
+
+## Streaming
+
+For long generations, stream tokens as they arrive:
+
+```python
+from huggingface_hub import InferenceClient
+
+client = InferenceClient()
+for chunk in client.text_generation(
+    "Explain transformers in 2 sentences.",
+    model="gpt2",
+    stream=True,
+):
+    print(chunk, end="", flush=True)
+```
+
+## Provider selection
+
+`provider="auto"` is the default and tries providers in your preference order with failover. You can also pin a specific provider.
+
+Python:
+```python
+from huggingface_hub import InferenceClient
+
+client = InferenceClient()
+
+# Auto selection (default)
+img_auto = client.text_to_image(
+    "Astronaut riding a horse",
+    model="black-forest-labs/FLUX.1-schnell",
+    provider="auto",
+)
+
+# Explicit provider
+img_fal = client.text_to_image(
+    "Astronaut riding a horse",
+    model="black-forest-labs/FLUX.1-schnell",
+    provider="fal-ai",
+)
+```
+
+TypeScript:
+```typescript
+import { InferenceClient } from "@huggingface/inference";
+
+const client = new InferenceClient(process.env.HF_TOKEN);
+
+const imageAuto = await client.textToImage({
+  model: "black-forest-labs/FLUX.1-schnell",
+  inputs: "Astronaut riding a horse",
+  provider: "auto",
+  parameters: { num_inference_steps: 5 },
+});
+
+const imageFal = await client.textToImage({
+  model: "black-forest-labs/FLUX.1-schnell",
+  inputs: "Astronaut riding a horse",
+  provider: "fal-ai",
+  parameters: { num_inference_steps: 5 },
+});
+```
+
+## Error handling and timeouts
+
+- Set timeouts when creating the client (e.g., `InferenceClient(timeout=60)`).
+- Catch HTTP errors (e.g., invalid model, rate limits) and retry when appropriate.
+
+You're ready to build an app with providers—let's do that next.
+
+Up next: build your first AI app using Providers (transcribe + summarize).
+
+

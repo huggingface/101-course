@@ -1,0 +1,264 @@
+# Introduction[[introduction]]
+
+Welcome to Hugging Face 101! This course will teach you the essentials of the Hugging Face ecosystem — home to over 2 billion models and 500,000 dataset.
+
+You'll learn three ways to work with Hugging Face: through the web interface (no coding required), via APIs (for quick integration), or with Python libraries (for full control). Pick the approach that fits your project, or mix and match as needed!
+
+## What You'll Learn
+
+By the end of this course, you'll know how to navigate the Hugging Face Hub to find and use the models, datasets, and spaces you need for your projects. You'll learn to integrate AI capabilities into your applications using APIs for text generation, image creation, and more, without needing to manage complex infrastructure.
+
+The course will teach you how to share your work with the community by uploading your own models, datasets, and interactive demos called Spaces. You'll discover how to build these Spaces to showcase your AI projects and make them accessible to others.
+
+Additionally, you'll learn evaluation techniques to test whether AI models work effectively for your specific use case.
+
+Finally, you'll explore advanced features like the Model Context Protocol (MCP), which enables AI models to connect to external tools and data sources, expanding their capabilities beyond traditional text processing.
+
+<Tip>
+
+**Not sure what some of these terms mean?** Don't worry! We'll explain everything as we go. This course assumes no prior AI experience.
+
+</Tip>
+
+## Course Structure
+
+This course is divided into 8 chapters, each with a focus on a different aspect of Hugging Face.
+
+1. [Introduction](chapter0/1)
+2. [Introduction to Hugging Face](chapter1/1) - Learn about the Hugging Face ecosystem and how to get started
+3. [Inference Providers](chapter2/1) - Learn about the different ways to use Hugging Face models
+4. [Sharing Models](chapter3/1) - Learn how to share your own models with the community
+5. [Sharing Datasets](chapter4/1) - Learn how to share your own datasets with the community
+6. [Building Spaces](chapter5/1) - Learn how to build interactive demos with Hugging Face Spaces
+7. [Building with Gradio](chapter6/1) - Learn how to build interactive demos with Gradio
+8. [Evaluating Models](chapter7/1) - Learn how to evaluate AI models
+
+## Why Learn Hugging Face?
+
+Hugging Face has become the go-to platform for AI development. Think of it as the GitHub for AI - where the community shares models, datasets, and applications. Recent innovations like the [Model Context Protocol (MCP)](https://huggingface.co/blog/building-hf-mcp) are making AI models even more powerful by connecting them to external tools and data.
+
+Whether you're new to AI, a developer adding AI features to your app, or a researcher sharing your work, Hugging Face gives you the tools and community to succeed.
+
+<Tip>
+
+**Why start here?** Much of today's open AI work is shared on Hugging Face. Learning the platform gives you fast access to new models, datasets, and examples.
+
+</Tip>
+
+## Choose Your Learning Path
+
+This course works for everyone, from complete beginners to experienced developers. Pick the path that matches your style:
+
+### Start with Web Interfaces
+
+*Perfect if you're new to AI or prefer clicking over coding*
+
+This path focuses on exploring models through the Hub's web interface, where you can try AI models directly in your browser without writing any code. You'll learn to create Spaces (interactive demos) using visual tools and templates.
+
+### Deep Dive with Python and JavaScript
+
+*Best if you want full control and customization*
+
+This comprehensive path covers installing Hugging Face libraries locally, fine-tuning models for your specific needs, and building advanced applications with Python. You'll gain complete control over the AI pipeline, from data preprocessing to model deployment and monitoring.
+
+Focus on: All chapters, hands-on coding
+
+<Tip>
+
+**Not sure which path to pick?** Start with UI-First to get familiar with the concepts, then branch out as your needs grow. You can always switch paths later!
+
+</Tip>
+
+## What You Need to Get Started
+
+**Everyone needs:**
+- A [Hugging Face account](https://huggingface.co/join) (free)
+- An internet browser
+- Curiosity about AI!
+
+**For API and Code paths, also helpful:**
+- Basic familiarity with web APIs (we'll explain as we go)
+- Some Python experience (but beginners can follow along)
+
+<Tip>
+
+**UI-First learners**: You're all set! Skip ahead to Chapter 1 and start exploring through your browser.
+
+</Tip>
+
+## Using Google Colab (Recommended for Beginners)
+
+*For Code-First and API-First paths. UI-First learners can skip to Chapter 1.*
+
+Google Colab is the easiest way to get started - no installation required! Just open a notebook in your browser and start coding.
+
+New to Colab? Check out their [introduction](https://colab.research.google.com/notebooks/intro.ipynb) first. Colab gives you free access to GPUs and TPUs for AI experiments.
+
+Ready? Create a new notebook and let's install the libraries:
+
+![colab](https://huggingface.co/datasets/huggingface-course/documentation-images/resolve/main/en/chapter0/new_colab.png)
+
+Install the Hugging Face libraries with pip. In Colab, use `!` before pip commands:
+
+```python
+# Core libraries for this course
+!pip install huggingface_hub transformers datasets gradio
+
+# Optional: MCP client and tooling support
+!pip install -U "huggingface_hub[mcp]"
+```
+
+Test that everything installed correctly:
+
+```python
+import huggingface_hub
+import transformers
+import datasets
+import gradio
+
+print("✅ Ready to go!")
+```
+
+<Tip>
+
+**Installation taking forever?** That's normal - these libraries are pretty big. Grab a coffee and wait for the green checkmarks!
+
+</Tip>
+
+![install](https://huggingface.co/datasets/huggingface-course/documentation-images/resolve/main/en/chapter0/install.gif)
+
+### What Each Library Does
+
+The [`huggingface_hub`](https://huggingface.co/docs/huggingface_hub/en/index) library serves as your primary connection to the Hugging Face Hub, handling authentication, model downloads, and uploads. It manages the communication between your local environment and the vast repository of AI models and datasets. When you install the optional `mcp` extra, it also provides support for the Model Context Protocol, enabling advanced AI agent capabilities.
+
+The [`transformers`](https://huggingface.co/docs/transformers/en/index) library provides access to thousands of pre-trained models spanning text, images, audio, and multimodal tasks. It offers a unified API for loading, using, and fine-tuning state-of-the-art models like BERT, GPT, and CLIP, making it easy to switch between different architectures for your specific needs.
+
+The [`datasets`](https://huggingface.co/docs/datasets/en/index) library simplifies working with machine learning datasets. It provides efficient loading and processing of popular datasets, along with tools for preparing your own data. The library handles memory management automatically, making it possible to work with datasets that are too large to fit in memory.
+
+Finally, [`gradio`](https://www.gradio.app/docs) enables you to build interactive web demos with minimal code. You can create user-friendly interfaces for your AI models, allowing others to test and interact with your work directly through a web browser.
+
+To use the [Model Context Protocol (MCP)](https://huggingface.co/docs/huggingface_hub/en/package_reference/mcp) client and tiny-agents, install the `mcp` extra: `pip install -U "huggingface_hub[mcp]"`.
+
+You're now ready for all the projects in this course!
+
+## Local Python Setup
+
+*For experienced developers who want to work locally instead of Colab.*
+
+If you prefer local development, first install Python from [python.org](https://python.org) or follow [this detailed guide](https://realpython.com/installing-python/).
+
+<Tip>
+
+`uv` is a great tool for managing Python projects. We recommend using it to install the libraries. Check out the [uv documentation](https://docs.astral.sh/uv/) for more information.
+
+</Tip>
+
+Verify Python is installed:
+
+```bash
+python --version
+```
+
+We recommend using virtual environments to avoid package conflicts. Think of them as isolated Python setups for different projects.
+
+Create a project directory and virtual environment:
+
+<hfoption id="python">
+
+<hfoption id="standard">
+
+```bash
+# Create and enter your project directory
+mkdir ~/huggingface-course
+cd ~/huggingface-course
+
+# Create virtual environment
+python -m venv .env
+
+# Activate it (Mac/Linux)
+source .env/bin/activate
+
+# On Windows, use:
+# .env\Scripts\activate
+```
+</hfoption>
+
+<hfoption id="uv">
+
+Create a directory for your project and a virtual environment:
+
+```bash
+# Create and enter your project directory
+mkdir ~/huggingface-course
+cd ~/huggingface-course
+```
+
+With `uv` you can set up a project with a virtual environment and install the libraries:
+
+```bash
+uv init
+```
+
+We need to create a virtual environment:
+
+```bash
+uv venv
+```
+
+Then activate the virtual environment:
+
+```bash
+source .venv/bin/activate
+```
+
+Now we can add the libraries to our project using `uv add` which will add the libraries to the `pyproject.toml` file and install them in the virtual environment.
+
+```bash
+uv add install transformers datasets gradio "huggingface_hub[mcp]"
+```
+
+`uv` will now manage 
+
+</hfoption>
+
+</hfoptions>
+
+When activated, your terminal prompt will change to show `(.env)`. To deactivate later, just run `deactivate`.
+
+<Tip>
+**Pro tip**: Always activate your virtual environment before installing packages or running Python scripts for this course!
+</Tip>
+
+### Install the Libraries
+
+Now install the same Hugging Face libraries:
+
+```bash
+pip install huggingface_hub transformers datasets gradio
+pip install -U "huggingface_hub[mcp]"  # Optional MCP support
+```
+
+Test the installation:
+
+```bash
+python -c "import huggingface_hub, transformers, datasets, gradio; print('✅ Ready to go!')"
+```
+
+## Get Your Access Token
+
+To upload models, create private repos, and access gated models, you'll need to authenticate:
+
+```python
+from huggingface_hub import login
+login()
+```
+
+This will ask for your Hugging Face token. Get yours from [huggingface.co/settings/tokens](https://huggingface.co/settings/tokens).
+
+<Tip>
+**Don't have a token yet?** You can still follow most of the course without one. Create a token when you're ready to start uploading your own models and datasets.
+</Tip>
+
+## What's Next?
+
+You're ready to start! Here's where to go based on your chosen path.
