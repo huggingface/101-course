@@ -7,9 +7,8 @@ on:
       - completed
 
 permissions:
-  actions: write
+  actions: read
   contents: write
-  deployments: write
   pull-requests: write
 
 
