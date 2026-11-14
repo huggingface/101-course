@@ -1,0 +1,76 @@
+- title: "0. Orientation: What the Hub is & why it matters"
+  sections:
+    - local: 0/0
+      title: "Introduction"
+- title: "1. Hello, Hub! (the 15-minute quickstart)"
+  sections:
+    - local: 1/0
+      title: "Introduction"
+- title: "2. Hub Repositories, but for ML"
+  sections:
+    - local: 2/0
+      title: "Introduction"
+- title: "3. Model Cards & Dataset Cards"
+  sections:
+    - local: 3/0
+      title: "Introduction"
+- title: "4. Quiz: Hugging Face Basics"
+  sections:
+    - local: 4/0
+      title: "Introduction"
+- title: "5. Finding the good stuff"
+  sections:
+    - local: 5/0
+      title: "Introduction"
+- title: "6. Working with the Hub from code"
+  sections:
+    - local: 6/0
+      title: "Introduction"
+- title: "7. Project 1: Create your own Dashboard on the Hub"
+  sections:
+    - local: 7/0
+      title: "Introduction"
+- title: "8. Datasets on the Hub"
+  sections:
+    - local: 8/0
+      title: "Introduction"
+- title: "9. Spaces: share interactive demos"
+  sections:
+    - local: 9/0
+      title: "Introduction"
+- title: "10. Inference options"
+  sections:
+    - local: 10/0
+      title: "Introduction"
+- title: "11. Project 2: Build your own MCP Server"
+  sections:
+    - local: 11/0
+      title: "Introduction"
+- title: "12. Collaboration, orgs, and governance"
+  sections:
+    - local: 12/0
+      title: "Introduction"
+- title: "13. Automate & integrate"
+  sections:
+    - local: 13/0
+      title: "Introduction"
+- title: "14. Project 3: Build a Webhook Post for your Org"
+  sections:
+    - local: 14/0
+      title: "Introduction"
+- title: "15. Managing teams"
+  sections:
+    - local: 15/0
+      title: "Introduction"
+- title: "16. Security, safety & compliance"
+  sections:
+    - local: 16/0
+      title: "Introduction"
+- title: "17. Enterprise Exam and Certification"
+  sections:
+    - local: 17/0
+      title: "Introduction"
+- title: "18. Your path forward"
+  sections:
+    - local: 18/0
+      title: "Introduction"
